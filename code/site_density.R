@@ -1,5 +1,10 @@
 library("magrittr")
 
+#### basics ####
+
+# turn scientific notation off
+options(scipen = 999)
+
 #### load data ####
 
 # archaeological sites
@@ -26,13 +31,3 @@ Thiessen_vertices_spdf <- sp::remove.duplicates(Thiessen_vertices_spdf) %>%
 # calculate radius of LEC and add this information to Thiessen_vertices_spdf
 Thiessen_vertices_spdf@data$radiusLEC <- rgeos::gDistance(sites_spdf, Thiessen_vertices_spdf, byid = TRUE) %>%
   apply(1,min)
-  
-
-
-#### needs to be deleted ####
-plot(sites_spdf@coords[,1], sites_spdf@coords[,2], type = "n", asp = 1)
-points(sites_spdf, pch = 20, col = "red")
-points(sites_nodes_spdf, pch = 20, col = "black")
-plot(deldir::deldir(sites_spdf@coords[,1], sites_spdf@coords[,2]), wlines = "tess", wpoints = "none", number = FALSE, lty = 1, add = TRUE)
-points(Thiessen_vertices$x, Thiessen_vertices$y)
-
