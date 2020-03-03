@@ -29,3 +29,23 @@ legend(x = 500000, y = 5650000,
        merge = TRUE,
        bty = "n",
        bg = "transparent")
+
+#### h-scatterplots ####
+
+#### correlogram ####
+
+#### variogram / semivariogram ####
+
+# plot sample variogram
+plot(Thiessen_vertices_vario, Thiessen_vertices_vario_fit)
+
+#### Kriging results ####
+
+as.data.frame(LEC_kriged) %>%
+  ggplot2::ggplot(aes(x = x, y = y)) +
+  ggplot2::geom_tile(aes(fill=var1.pred)) +
+  ggplot2::coord_equal() +
+  ggplot2::scale_fill_gradient2(midpoint = mean(LEC_kriged$var1.pred),
+                                low = "red", mid = "yellow", high = "green") +
+  ggplot2::geom_point(data = as.data.frame(sites_spdf), aes(x = coords.x1, y = coords.x2)) +
+  ggplot2::theme_bw()
