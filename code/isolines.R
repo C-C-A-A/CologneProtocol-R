@@ -56,6 +56,21 @@ isoline_polygons <- LEC_kriged %>%
   as("SpatialGridDataFrame") %>%
   inlmisc::Grid2Polygons(level = TRUE, at = seq(0,70000,500))
 
+#### descriptive propertives of isolines ####
+
+# initialize data.frame
+Isolines_stats <- data.frame(km_isoline = integer(),
+                                Anzahl_Fl = integer(), 
+                                Anzahl_Fst = integer(), 
+                                Pro_Fst = integer(),
+                                Area = integer(),
+                                stringsAsFactors=FALSE)
+
+# Zaehlen der Anzahl an Flaechen je Isolinie:
+for (i in 1:length(isoline_polygons)) {
+  # der SPDF besteht aus einer Verschachtelung mehrerer Listen, es wird von der Gesamtanzahl an Polygonen einer Liste die Anzahl an Polygonen abgezogen, die im slot hole TRUE stehen haben.
+  Isolines_stats[i,2] <- length(isoline_polygons@polygons[[i]]@Polygons) - sum(sapply(isoline_polygons@polygons[[i]]@Polygons, function(x) {sum(isTRUE(x@hole), na.rm = TRUE)}))
+}
 
 
 
