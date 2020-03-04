@@ -10,7 +10,7 @@ options(scipen = 999)
 # sample variogram
 Thiessen_vertices_vario <- gstat::variogram(radiusLEC~1,
                                            Thiessen_vertices_spdf,
-                                           width = 200,
+                                           width = sp::spDists(t(Thiessen_vertices_spdf@bbox))[1,2]/250,
                                            cutoff = 20000)
 
 # identify first plateau for fitting theoretical variogram
