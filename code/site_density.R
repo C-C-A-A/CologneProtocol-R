@@ -24,7 +24,7 @@ Thiessen_vertices <- rbind(setNames(Thiessen_vertices[,c(1:2,5,7,9)], c("x", "y"
 Thiessen_vertices_spdf <- sp::SpatialPointsDataFrame(coords = Thiessen_vertices[1:2], data = Thiessen_vertices[,3:5] )
 sp::proj4string(Thiessen_vertices_spdf) <- sp::CRS("+init=epsg:25832") # !No reprojection, data is already in EPSG 25832!
 
-# remove dublicates and border points !! see issue for border points!!
+# remove dublicates and border points !! see issue for border points !!
 Thiessen_vertices_spdf <- sp::remove.duplicates(Thiessen_vertices_spdf) %>%
   {.[.[[2]] == FALSE, ]}
 
