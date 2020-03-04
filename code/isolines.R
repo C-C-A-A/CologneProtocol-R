@@ -47,6 +47,7 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
                            model = Thiessen_vertices_vario_fit,
                            nmin = 3,
                            nmax = 10,
+                           maxdist = sp::spDists(t(Thiessen_vertices_spdf@bbox))[1,2]/2,
                            debug.level = -1)
 
 #### creating isolines ####
@@ -90,9 +91,7 @@ for (i in 2:length(Isolines_stats[,3])) {
 
 # calculate the percentage increase in the nummber of site per isoline
 for (i in 1:length(Isolines_stats[,4])) {
-  
   Isolines_stats[i,4] <- (Isolines_stats[i,3] * 100) / length(sites_spdf)
-  
 }
 
 # calculate area enclosed by each isoline
