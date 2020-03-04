@@ -37,7 +37,9 @@ legend(x = 500000, y = 5650000,
 #### variogram / semivariogram ####
 
 # plot sample variogram
+plot(Thiessen_vertices_vario, Thiessen_vertices_vario_fit, xlim = c(0,40000), ylim = c(0,50000000))
 plot(Thiessen_vertices_vario, Thiessen_vertices_vario_fit)
+
 
 #### Kriging results ####
 
