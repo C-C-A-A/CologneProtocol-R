@@ -34,10 +34,10 @@ Thiessen_vertices_vario_fit <- gstat::fit.variogram(Thiessen_vertices_vario,
 # creating a grid for kriging
 grid <- expand.grid(x = seq(as.integer(range(Thiessen_vertices_spdf@coords[,1]))[1],
                             as.integer(range(Thiessen_vertices_spdf@coords[,1]))[2],
-                            by = 300),
+                            by = 200),
                     y = seq(as.integer(range(Thiessen_vertices_spdf@coords[,2]))[1],
                             as.integer(range(Thiessen_vertices_spdf@coords[,2]))[2],
-                            by = 300)) %>%
+                            by = 200)) %>%
   {sp::SpatialPoints(coords = .[1:2], proj4string = sp::CRS("+init=epsg:25832"))}
  
 # kriging
@@ -95,7 +95,11 @@ for (i in 1:length(Isolines_stats[,4])) {
 }
 
 # calculate area enclosed by each isoline
+Isolines_stats[1, 5] <- raster::area(isoline_polygons)[1]/1000000
 
+for (i in 2:length(Isolines_stats[,5])) {
+  Isolines_stats[i,5] <- raster::area(isoline_polygons)[i]/1000000 + Isolines_stats[i-1,5]
+}
 
 #### save data ####
 
