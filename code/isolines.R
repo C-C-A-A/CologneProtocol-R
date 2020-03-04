@@ -22,7 +22,7 @@ sill.plateau <- Thiessen_vertices_vario$gamma[Thiessen_vertices_vario$dist == ra
   
 # fitting theoretical variogram
 Thiessen_vertices_vario_fit <- gstat::fit.variogram(Thiessen_vertices_vario,
-                                                    gstat::vgm(nugget = NA,
+                                                    gstat::vgm(nugget = 0, # Zimmermann 2004, 52
                                                         model = "Sph",
                                                         psill = sill.plateau,
                                                         range = range.plateau),
@@ -59,13 +59,13 @@ isoline_polygons <- LEC_kriged %>%
   as("SpatialGridDataFrame") %>%
   inlmisc::Grid2Polygons(level = TRUE, at = seq(0,70000,500))
 
-#### descriptive propertives of isolines ####
+#### basic descriptive properties of isolines ####
 
 # initialize data.frame
 Isolines_stats <- data.frame(km_isoline = integer(),
-                                number_Ar = integer(), 
-                                number_Si = integer(), 
-                                Pro_Si = integer(),
+                                number_Area = integer(), 
+                                number_Sites = integer(), 
+                                percent_Sites = integer(),
                                 Area = integer(),
                                 stringsAsFactors=FALSE)
 
@@ -75,7 +75,7 @@ for (i in 1:length(isoline_polygons)) {
 }
 
 # insert name of isolines
-Isolines_stats[, 1] <- isoline_polygons@data[, 1] + isoline_polygons@data[1, 1]
+Isolines_stats[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] - isoline_polygons@data[1, 1])/2
 
 # calculate number of sites within each isoline
 Pt_overlay <- sp::over(sites_spdf, isoline_polygons)
@@ -99,6 +99,27 @@ Isolines_stats[1, 5] <- raster::area(isoline_polygons)[1]/1000000
 
 for (i in 2:length(Isolines_stats[,5])) {
   Isolines_stats[i,5] <- raster::area(isoline_polygons)[i]/1000000 + Isolines_stats[i-1,5]
+}
+
+#### increase of number of sites and area per km ####
+
+# initialize data.frame
+Isolines_increase <- data.frame(km_isoline = integer(),
+                             increase_Sites = integer(), 
+                             increase_Area = integer(),
+                             stringsAsFactors=FALSE)
+
+# calculate increase in numbers of site per km
+for (i in 1:length(Isolines_stats[,1])) {
+  Isolines_increase[i,2] <- (Isolines_stats[i+1,3] - Isolines_stats[i,3]) * 2
+}
+
+# insert name of isolines
+Isolines_increase[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] - isoline_polygons@data[1, 1])/2 + 500
+
+# calculate increase in area of polygon per km
+for (i in 1:length(Isolines_stats[,1])) {
+  Isolines_increase[i,3] <- (Isolines_stats[i+1,5] - Isolines_stats[i,5]) * 2
 }
 
 #### save data ####
