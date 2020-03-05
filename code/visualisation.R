@@ -145,6 +145,32 @@ Isolines_increase %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+#### plot of difference in increase of number of sites and area per km ####
 
+# difference of increase of number of sites
+Isolines_diff %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = diff_Sites)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Difference of increase of number of sites per km",
+                x = "[km]",
+                y = "Difference") +
+  ggplot2::scale_x_continuous(limit = c(0.5,20),
+                              breaks = seq(0.5,20,0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
 
-  
+# increase of area
+Isolines_diff %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = diff_Area)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Difference of increase of area per km",
+                x = "[km]",
+                y = "Area [km²]") +
+  ggplot2::scale_x_continuous(limit = c(0.5,20),
+                              breaks = seq(0.5,20,0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
