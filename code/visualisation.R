@@ -30,10 +30,6 @@ legend(x = 500000, y = 5650000,
        bty = "n",
        bg = "transparent")
 
-#### h-scatterplots ####
-
-#### correlogram ####
-
 #### variogram / semivariogram ####
 
 # plot sample variogram
