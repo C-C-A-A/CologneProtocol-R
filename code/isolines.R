@@ -122,6 +122,33 @@ for (i in 1:length(Isolines_stats[,1])) {
   Isolines_increase[i,3] <- (Isolines_stats[i+1,5] - Isolines_stats[i,5]) * 2
 }
 
+# delete unused row
+Isolines_increase <- Isolines_increase[-140, ]
+
+#### Difference in increase of number of sites and area per km ####
+
+# initialize data.frame
+Isolines_diff <- data.frame(km_isoline = integer(),
+                                diff_Sites = integer(), 
+                                diff_Area = integer(),
+                                stringsAsFactors=FALSE)
+
+# calculate difference of increase of number of site per km
+for (i in 1:length(Isolines_increase[, 1])) {
+  Isolines_diff[i,2] <- Isolines_increase[i,2] - Isolines_increase[i+1,2]
+}
+
+# insert name of isolines
+Isolines_diff[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] - isoline_polygons@data[1, 1])/2 + 500
+
+# calculate difference in increase of area per km
+for (i in 1:length(Isolines_increase[, 1])) {
+  Isolines_diff[i,3] <- Isolines_increase[i,3] - Isolines_increase[i+1,3]
+}
+
+# delete unused rows
+Isolines_diff <- Isolines_diff[-c(139, 140), ]
+
 #### save data ####
 
 rgdal::writeOGR(isoline_polygons,
