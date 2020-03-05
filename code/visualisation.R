@@ -1,11 +1,11 @@
 library("magrittr")
 
-#### basics #####
+# basics -----------------------------------------------------------------------
 
 # turn scientific notation off
 options(scipen = 999)
 
-#### plot of archaeological sites and Thiessen polygons ####
+# plot of archaeological sites and Thiessen polygons ------------------------
 
 plot(sites_spdf@coords[,1], sites_spdf@coords[,2],
      type = "n",
@@ -30,13 +30,11 @@ legend(x = 500000, y = 5650000,
        bty = "n",
        bg = "transparent")
 
-#### variogram / semivariogram ####
-
-# plot sample variogram
+# variogram / semivariogram ----------------------------------------------------
 plot(Thiessen_vertices_vario, Thiessen_vertices_vario_fit, xlim = c(0,40000), ylim = c(0,50000000))
 plot(Thiessen_vertices_vario, Thiessen_vertices_vario_fit)
 
-#### Kriging results ####
+# Kriging results --------------------------------------------------------------
 LEC_kriged %>%
   as.data.frame() %>%
   ggplot2::ggplot(ggplot2::aes(x = x, y = y)) +
@@ -47,7 +45,7 @@ LEC_kriged %>%
   ggplot2::geom_point(data = as.data.frame(sites_spdf), ggplot2::aes(x = coords.x1, y = coords.x2)) +
   ggplot2::theme_bw()
 
-#### Variance of kriging results ####
+# Variance of kriging results --------------------------------------------------
 LEC_kriged %>%
   as.data.frame() %>%
   ggplot2::ggplot(ggplot2::aes(x = x, y = y)) +
@@ -56,7 +54,7 @@ LEC_kriged %>%
   ggplot2::scale_fill_gradient(low = "yellow", high = "red") +
   ggplot2::theme_bw()
 
-#### plot of descriptive properties of isolines ####
+# plot of descriptive properties of isolines -----------------------------------
 
 # number of distinct areas per isoline
 Isolines_stats %>%
@@ -115,7 +113,7 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
-#### plot of increase of number of sites and area per km ####
+# plot of increase of number of sites and area per km --------------------------
 
 # increase of number of sites
 Isolines_increase %>%
@@ -145,7 +143,7 @@ Isolines_increase %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
-#### plot of difference in increase of number of sites and area per km ####
+# plot of difference in increase of number of sites and area per km ------------
 
 # difference of increase of number of sites
 Isolines_diff %>%

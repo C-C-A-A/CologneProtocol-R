@@ -1,17 +1,17 @@
 library("magrittr")
 
-#### basics ####
+# basics -----------------------------------------------------------------------
 
 # turn scientific notation off
 options(scipen = 999)
 
-#### load data ####
+# load data --------------------------------------------------------------------
 
 # archaeological sites
 sites_spdf <- rgdal::readOGR(dsn = "data", layer = "Roessen")
 sp::proj4string(sites_spdf) <- sp::CRS("+init=epsg:25832") # !No reprojection, data is already in EPSG 25832!
 
-#### Largest Empty Circles (LEC) ####
+# Largest Empty Circles (LEC) --------------------------------------------------
 
 # calculate vertices of Thiessen polygons
 Thiessen_vertices <- deldir::deldir(sites_spdf@coords[,1], sites_spdf@coords[,2]) %$%

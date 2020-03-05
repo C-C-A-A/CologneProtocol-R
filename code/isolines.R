@@ -1,11 +1,11 @@
 library("magrittr")
 
-#### basics ####
+# basics -----------------------------------------------------------------------
 
 # turn scientific notation off
 options(scipen = 999)
 
-#### variogram ####
+# variogram --------------------------------------------------------------------
 
 # sample variogram
 Thiessen_vertices_vario <- gstat::variogram(radiusLEC~1,
@@ -29,7 +29,7 @@ Thiessen_vertices_vario_fit <- gstat::fit.variogram(Thiessen_vertices_vario,
                                                     fit.sills = FALSE,
                                                     fit.ranges = FALSE)
 
-#### kriging ####
+# kriging ----------------------------------------------------------------------
 
 # creating a grid for kriging
 grid <- expand.grid(x = seq(as.integer(range(Thiessen_vertices_spdf@coords[,1]))[1],
@@ -50,7 +50,7 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
                            maxdist = sp::spDists(t(Thiessen_vertices_spdf@bbox))[1,2]/2,
                            debug.level = -1)
 
-#### creating isolines ####
+# creating isolines ------------------------------------------------------------
 isoline_polygons <- LEC_kriged %>%
   {raster::rasterFromXYZ(data.frame(x = sp::coordinates(.)[,1],
                                   y = sp::coordinates(.)[,2],
@@ -59,7 +59,7 @@ isoline_polygons <- LEC_kriged %>%
   as("SpatialGridDataFrame") %>%
   inlmisc::Grid2Polygons(level = TRUE, at = seq(0,70000,500))
 
-#### basic descriptive properties of isolines ####
+# basic descriptive properties of isolines -------------------------------------
 
 # initialize data.frame
 Isolines_stats <- data.frame(km_isoline = integer(),
@@ -102,7 +102,7 @@ for (i in 2:length(Isolines_stats[,5])) {
   Isolines_stats[i,5] <- raster::area(isoline_polygons)[i]/1000000 + Isolines_stats[i-1,5]
 }
 
-#### increase of number of sites and area per km ####
+# increase of number of sites and area per km ----------------------------------
 
 # initialize data.frame
 Isolines_increase <- data.frame(km_isoline = integer(),
@@ -125,7 +125,7 @@ for (i in 1:length(Isolines_stats[,1])) {
   Isolines_increase[i,3] <- (Isolines_stats[i+1,5] - Isolines_stats[i,5]) * 2
 }
 
-#### Difference in increase of number of sites and area per km ####
+# Difference in increase of number of sites and area per km --------------------
 
 # initialize data.frame
 Isolines_diff <- data.frame(km_isoline = integer(),
@@ -147,8 +147,9 @@ for (i in 1:length(Isolines_increase[, 1])) {
   Isolines_diff[i,3] <- Isolines_increase[i,3] - Isolines_increase[i+1,3]
 }
 
-#### save data ####
+# save data --------------------------------------------------------------------
 
+# polygons of isolines as shape file
 rgdal::writeOGR(isoline_polygons,
                 dsn = "output",
                 layer = "isoline_polygons",
