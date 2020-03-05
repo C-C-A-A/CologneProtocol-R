@@ -76,6 +76,7 @@ for (i in 1:length(isoline_polygons)) {
 
 # insert name of isolines
 Isolines_stats[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] - isoline_polygons@data[1, 1])/2
+Isolines_stats[, 1] <- Isolines_stats[, 1]/1000
 
 # calculate number of sites within each isoline
 Pt_overlay <- sp::over(sites_spdf, isoline_polygons)
@@ -116,6 +117,8 @@ for (i in 1:length(Isolines_stats[,1])) {
 
 # insert name of isolines
 Isolines_increase[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] - isoline_polygons@data[1, 1])/2 + 500
+Isolines_increase[, 1] <- Isolines_increase[, 1]/1000
+
 
 # calculate increase in area of polygon per km
 for (i in 1:length(Isolines_stats[,1])) {
@@ -137,6 +140,7 @@ for (i in 1:length(Isolines_increase[, 1])) {
 
 # insert name of isolines
 Isolines_diff[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] - isoline_polygons@data[1, 1])/2 + 500
+Isolines_diff[, 1] <- Isolines_diff[, 1]/1000
 
 # calculate difference in increase of area per km
 for (i in 1:length(Isolines_increase[, 1])) {
