@@ -122,9 +122,6 @@ for (i in 1:length(Isolines_stats[,1])) {
   Isolines_increase[i,3] <- (Isolines_stats[i+1,5] - Isolines_stats[i,5]) * 2
 }
 
-# delete unused row
-Isolines_increase <- Isolines_increase[-140, ]
-
 #### Difference in increase of number of sites and area per km ####
 
 # initialize data.frame
@@ -145,9 +142,6 @@ Isolines_diff[, 1] <- isoline_polygons@data[, 1] + (isoline_polygons@data[2, 1] 
 for (i in 1:length(Isolines_increase[, 1])) {
   Isolines_diff[i,3] <- Isolines_increase[i,3] - Isolines_increase[i+1,3]
 }
-
-# delete unused rows
-Isolines_diff <- Isolines_diff[-c(139, 140), ]
 
 #### save data ####
 
