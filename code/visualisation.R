@@ -55,3 +55,65 @@ LEC_kriged %>%
   ggplot2::coord_equal() +
   ggplot2::scale_fill_gradient(low = "yellow", high = "red") +
   ggplot2::theme_bw()
+
+#### descriptive statistics of isoline ####
+
+# number of distinct areas per isoline
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Area)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Number of distinct areas per Isoline",
+                x = "Isoline [km]",
+                y = "Number of distinct areas") +
+  ggplot2::scale_x_continuous(limit = c(0.5,20),
+                              breaks = seq(0.5,20,0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+  
+
+# number of sites per isoline
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Sites)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Number of sites per Isoline",
+                x = "Isoline [km]",
+                y = "Number of sites") +
+  ggplot2::scale_x_continuous(limit = c(0.5,20),
+                              breaks = seq(0.5,20,0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+
+# percent of sites per isoline
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = percent_Sites)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Percentage of sites per Isoline",
+                x = "Isoline [km]",
+                y = "Percentage of sites [%]") +
+  ggplot2::scale_x_continuous(limit = c(0.5,20),
+                              breaks = seq(0.5,20,0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+
+# area per isoline
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = Area)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Enclosed area per isoline",
+                x = "Isoline [km]",
+                y = "Area [km²]") +
+  ggplot2::scale_x_continuous(limit = c(0.5,20),
+                              breaks = seq(0.5,20,0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+  
+  
+  
