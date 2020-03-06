@@ -5,8 +5,23 @@ library("magrittr")
 # Turn scientific notation off
 options(scipen = 999)
 
-# Definition of used variables throughout the script
-your_projection <- "+init=epsg:25832"
+# Definition of used variables throughout the script ---------------------------
+
+# variables used for loading and creating data 
+your_projection <- "+init=epsg:25832" # the projection of your data
+your_grid_spacing <- 500 # choose some value [m] between 200 and 1000 
+your_isoline_steps <- seq(0, 100000, 1000) # min, max, step
+
+# variables used for kriging
+your_model <- c("Sph") # choose from gstat::show.vgm(), 
+your_nmin <- 3 # minimum number of sites used for interpolation
+your_nmax <- 10 # maximum number of sites used for interpolation
+
+# variables used for plotting statistics of isolines
+# choose according to your_isoline_steps
+your_limit <- c(1, 20) # limits the x-axis
+your_breaks <- seq(1, 20, 1) # sets the tick marks on x-axis
+
 
 # Load data --------------------------------------------------------------------
 
