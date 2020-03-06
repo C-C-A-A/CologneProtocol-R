@@ -61,6 +61,9 @@ isoline_polygons <- LEC_kriged %>%
   as("SpatialGridDataFrame") %>%
   inlmisc::Grid2Polygons(level = TRUE, at = your_isoline_steps)
 
+# Rename the isolines because Grid2Polygon names them with the middle value
+isoline_polygons@data[, 1] <- your_isoline_steps[-1]
+
 # Save data --------------------------------------------------------------------
 
 # Polygons of isolines as shape file
