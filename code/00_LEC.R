@@ -25,11 +25,24 @@ your_breaks <- seq(1, 20, 1) # sets the tick marks on x-axis
 
 # Load data --------------------------------------------------------------------
 
-# Archaeological sites
-sites <- rgdal::readOGR(dsn = "data", layer = "earlyneolithic_ce_sites")
+# Sample data of Early Neolithic sites from Preuss 1998
+# Data is available from the CRC 806 database
+url_link <- "http://sfb806srv.uni-koeln.de/owsproxy.php?service=WFS&version=1.0.0&request=GetFeature&typeNames=geonode%3A_13_earlyneolithic_ce_sites_wgs84&outputFormat=csv"
 
-# Ignore warining! It's not a reprojection. But some functions need this step. 
+# load date as a data.frame
+sites <- read.csv(url(url_link))
+
+# Conversion into SPDF
+sites <- sp::SpatialPointsDataFrame(sp::SpatialPoints(
+  cbind(sites$RECHTS, sites$HOCH)),
+  sites,
+  proj4string = CRS(your_projection))
+
 sp::proj4string(sites) <- sp::CRS(your_projection)
+
+# Alternatively you can load your local data (copy it to folder data)
+# sites <- rgdal::readOGR(dsn = "data", layer = "earlyneolithic_ce_sites")
+# sp::proj4string(sites) <- sp::CRS(your_projection)
 
 # Largest Empty Circles (LEC) --------------------------------------------------
 
