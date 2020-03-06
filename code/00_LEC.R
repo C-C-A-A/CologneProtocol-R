@@ -1,33 +1,47 @@
 library("magrittr")
 
-# basics -----------------------------------------------------------------------
+# Basics -----------------------------------------------------------------------
 
-# turn scientific notation off
+# Turn scientific notation off
 options(scipen = 999)
 
-# load data --------------------------------------------------------------------
+# Definition of used variables throughout the script
+your_projection <- "+init=epsg:25832"
 
-# archaeological sites
-sites_spdf <- rgdal::readOGR(dsn = "data", layer = "Roessen")
-sp::proj4string(sites_spdf) <- sp::CRS("+init=epsg:25832") # !No reprojection, data is already in EPSG 25832!
+# Load data --------------------------------------------------------------------
+
+# Archaeological sites
+sites <- rgdal::readOGR(dsn = "data", layer = "earlyneolithic_ce_sites")
+
+# Ignore warining! It's not a reprojection. But some functions need this step. 
+sp::proj4string(sites) <- sp::CRS(your_projection)
 
 # Largest Empty Circles (LEC) --------------------------------------------------
 
-# calculate vertices of Thiessen polygons
-Thiessen_vertices <- deldir::deldir(sites_spdf@coords[,1], sites_spdf@coords[,2]) %$%
+# calculate vertices of voronoi diagram
+voronoi_vertices <- deldir::deldir(sites@coords[, 1],
+                                   sites@coords[, 2]) %$%
   dirsgs
 
-# rearrange Thiessen_vertices in preparation for transformation into an spdf
-Thiessen_vertices <- rbind(setNames(Thiessen_vertices[,c(1:2,5,7,9)], c("x", "y", "ind", "bp", "thirdv")), setNames(Thiessen_vertices[,c(3:4,6,8,10)], c("x", "y", "ind", "bp", "thirdv")))
+# rearrange voronoi_vertices in preparation for transformation into an spdf
+voronoi_vertices <- rbind(setNames(voronoi_vertices[,c(1:2, 5, 7, 9)],
+                                   c("x", "y", "ind", "bp", "thirdv")),
+                          setNames(voronoi_vertices[,c(3:4, 6, 8, 10)],
+                                   c("x", "y", "ind", "bp", "thirdv")))
 
-# transformation of Thiessen_vertices into an spdf
-Thiessen_vertices_spdf <- sp::SpatialPointsDataFrame(coords = Thiessen_vertices[1:2], data = Thiessen_vertices[,3:5] )
-sp::proj4string(Thiessen_vertices_spdf) <- sp::CRS("+init=epsg:25832") # !No reprojection, data is already in EPSG 25832!
+# transformation of voronoi_vertices into an spdf
+vertices_spdf <- sp::SpatialPointsDataFrame(coords = voronoi_vertices[1:2],
+                                            data = voronoi_vertices[, 3:5])
 
-# remove dublicates and border points !! see issue for border points !!
-Thiessen_vertices_spdf <- sp::remove.duplicates(Thiessen_vertices_spdf) %>%
+# Ignore warining! It's not a reprojection. But some functions need this step.
+sp::proj4string(vertices_spdf) <- sp::CRS(your_projection) 
+
+# remove dublicates and border points
+vertices_spdf <- sp::remove.duplicates(vertices_spdf) %>%
   {.[.[[2]] == FALSE, ]}
 
 # calculate radius of LEC and add this information to Thiessen_vertices_spdf
-Thiessen_vertices_spdf@data$radiusLEC <- rgeos::gDistance(sites_spdf, Thiessen_vertices_spdf, byid = TRUE) %>%
-  apply(1,min)
+vertices_spdf@data$radiusLEC <- rgeos::gDistance(sites,
+                                                 vertices_spdf,
+                                                 byid = TRUE) %>%
+  apply(1, min)
