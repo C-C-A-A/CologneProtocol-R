@@ -1,5 +1,11 @@
 library("magrittr")
 
+# Dependencies -----------------------------------------------------------------
+
+# to install all dependencies run:
+# automagic::install_deps_file()
+
+
 # Basics -----------------------------------------------------------------------
 
 # Turn scientific notation off
@@ -77,7 +83,7 @@ vertices_spdf <- sp::remove.duplicates(vertices_spdf) %>%
 }
 
 
-# calculate radius of LEC and add this information to Thiessen_vertices_spdf
+# calculate radius of LEC and add this information to vertices_spdf
 vertices_spdf@data$radiusLEC <- rgeos::gDistance(sites,
                                                  vertices_spdf,
                                                  byid = TRUE) %>%
