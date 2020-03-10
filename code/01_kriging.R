@@ -23,7 +23,7 @@ sill.plateau <- vertices_vario$gamma[vertices_vario$dist == range.plateau]
   
 # Fitting theoretical variogram
 vertices_vario_fit <- gstat::fit.variogram(vertices_vario,
-                                           # Zimmermann 2004, 52
+                                           # Zimmermann et al 2004, 52
                                            gstat::vgm(nugget = 0,
                                                       model  = your_model,
                                                       psill  = sill.plateau,
