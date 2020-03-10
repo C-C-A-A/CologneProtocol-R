@@ -10,8 +10,8 @@ options(scipen = 999)
 # variables used for loading and creating data 
 your_projection <- "+init=epsg:25832" # the projection of your data
 your_grid_spacing <- 500 # choose some value [m] between 200 and 1000 
-your_isoline_steps <- seq(0, 5000, 500) # min, max, step (equidistance)
-remove_border_points <- FALSE #Boolean (TRUE/FALSE), wether border points are removed or not
+your_isoline_steps <- seq(0, 10000, 500) # min, max, step (equidistance)
+remove_border_points <- FALSE # Boolean (TRUE/FALSE), wether border points are removed or not
 
 # variables used for kriging
 your_model <- c("Sph") # choose from gstat::show.vgm(), 
@@ -67,7 +67,7 @@ sp::proj4string(vertices_spdf) <- sp::CRS(your_projection)
 
 
 # If Condition wether border points are removed or not
-if(remove_border_points==TRUE){
+if(remove_border_points == TRUE){
 # remove dublicates and border points
 vertices_spdf <- sp::remove.duplicates(vertices_spdf) %>%
   {.[.[[2]] == FALSE, ]}
