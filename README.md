@@ -16,11 +16,11 @@ Robin Peters (_email ?!_)
 
 ### Published in:
 
-Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **submitted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
+Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
 
 ### Contents:
 
-- One rmarkdown file (`EarlyNeolithic.rmd`) that can be executed in RStudio. This file contains an example application of the **Cologne Protocol**
+- One rmarkdown file (`EarlyNeolithic.Rmd`) that can be executed in RStudio. This file contains an example application of the **Cologne Protocol**
 
 - The `code\` directory contains the script of the **Cologne Protocol**, which is organized in four `.R` files
 
@@ -30,11 +30,11 @@ Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S.
 
 Very short overview of what the script does..
 
-## Licence
+### Licence
 
 Code: MIT (http://opensource.org/licenses/MIT year: 2020, copyright holders: Manuel Broich and Robin Peters)
 
-## Dependencies
+### Dependencies
 
 The manual was developed under R version 3.6.2.
 
