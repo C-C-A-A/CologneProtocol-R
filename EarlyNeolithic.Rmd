@@ -1,0 +1,64 @@
+---
+title: "Example application of the Cologne Protocol for the Early Neolithic of central Europe"
+author: "M. Broich & R. Peters"
+date: "11 March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This manual presents an example application of the **Cologne Protocol** published in *Schmidt et al. (accepted)*. It is based upon the `.R` files which are in the `code\` directory. If you want to apply the Cologne Protocol on your own data, we recommend you to use these files.
+
+The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.  
+The goal of the script is to carry out all steps of the first part of the Cologne Protocol in R. These are (cf. *Schmidt et al. accepted, table S2*):
+
+1. **Calculating "Largest Empty Circles"**
+
+    i) Creating of Voronoi polygons
+    ii) Extraction of vertices
+    iii) Aggregation of verticies
+    iv) Defining the radius of the "Largest Empty Circle"
+
+2. **Kriging**
+
+    i) Kriging - Preparation and Grid
+    ii) Kriging - Semivariogram
+    iii) Kriging - inspect and raster output
+
+3. **Optimally Describing Isolines**
+
+    i) Creating contour lines (isolines)
+    ii) Calculating the area and number of sites per isoline
+    iii) Selecting the "Optimally Describing Isoline"
+
+4. **Data export**
+
+
+## Dependencies
+
+To run the code of the script several packages are needed. These dependencies are stored in the `deps.yaml` file. It is possible to load them manually or to use `automagic::install_deps_file()` function. If the package `automagic` is not installed, it is possible to intsall it with `install.packages("automagic")`. 
+
+
+## Sample Data
+
+```{r load data}
+url_link <- "http://sfb806srv.uni-koeln.de/owsproxy.php?service=WFS&version=1.0.0&request=GetFeature&typeNames=geonode%3A_13_earlyneolithic_ce_sites_wgs84&outputFormat=csv"
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Bibliography
+
+Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
