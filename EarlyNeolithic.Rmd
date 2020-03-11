@@ -11,12 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This manual presents an example application of the **Cologne Protocol** published in *Schmidt et al. (accepted)*. It is based upon the `.R` files which are in the `code\` directory. If you want to apply the Cologne Protocol on your own data, we recommend you to use these files.
+This manual presents an example application of the **Cologne Protocol** published in *Schmidt et al. (accepted)*. It is based upon the `.R` files which are in the `code\` directory. If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. 
 
-The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.  
+The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
+
 The goal of the script is to carry out all steps of the first part of the Cologne Protocol in R. These are (cf. *Schmidt et al. accepted, table S2*):
 
-1. **Calculating "Largest Empty Circles"**
+1. **Calculating "Largest Empty Circle"**
 
     i) Creating of Voronoi polygons
     ii) Extraction of vertices
@@ -40,14 +41,35 @@ The goal of the script is to carry out all steps of the first part of the Cologn
 
 ## Dependencies
 
-To run the code of the script several packages are needed. These dependencies are stored in the `deps.yaml` file. It is possible to load them manually or to use `automagic::install_deps_file()` function. If the package `automagic` is not installed, it is possible to intsall it with `install.packages("automagic")`. 
+To run the code of the script several packages are needed. These dependencies are stored in the `deps.yaml` file. It is possible to load them manually or to use `automagic::install_deps_file()` function. If the package `automagic` is not installed, it is possible to intsall it with `install.packages("automagic")`.  
+Furthermore the script was developed under R version 3.6.3.
 
 
 ## Sample Data
 
+For this examplary application, we use a distribution map of the Early Neolithic Linear Pottery Culture (LBK) in Central Europe. The map is based on *Preuss (1998, Karte 1)* and available from the CRC 806 database (https://crc806db.uni-koeln.de/start/).
+
+The distribution map can be loaded into R via URL: 
+
 ```{r load data}
+# url_link of distribution map of Linear Pottery Culture
 url_link <- "http://sfb806srv.uni-koeln.de/owsproxy.php?service=WFS&version=1.0.0&request=GetFeature&typeNames=geonode%3A_13_earlyneolithic_ce_sites_wgs84&outputFormat=csv"
+
+# load date as a data.frame
+sites <- read.csv(url(url_link))
+
+# Conversion into SPDF
+sites <- sp::SpatialPointsDataFrame(sp::SpatialPoints(
+  cbind(sites$RECHTS, sites$HOCH)),
+  sites,
+  proj4string = CRS("+init=epsg:25832"))
+
+# This is not a reprojection, but some function if the projection is not defined like this
+sp::proj4string(sites) <- sp::CRS("+init=epsg:25832")
+
 ```
+
+It is important to note, that cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem. 
 
 ## Including Plots
 
@@ -60,5 +82,7 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ## Bibliography
+
+Preuss, J. (ed.) **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
 
 Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
