@@ -7,11 +7,13 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library("magrittr")
 ```
 
 ## Introduction
 
-This manual presents an example application of the **Cologne Protocol** published in *Schmidt et al. (accepted)*. It is based upon the `.R` files which are in the `code\` directory. If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. 
+This manual presents an example application of the **Cologne Protocol** published in *Schmidt et al. (accepted)*. It is based upon the `.R` files which are in the `code\` directory. If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. However, the code chunks shown in this manual originate from the mentioned `.R` files.
 
 The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
 
@@ -69,15 +71,77 @@ sp::proj4string(sites) <- sp::CRS("+init=epsg:25832")
 
 ```
 
-It is important to note, that cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem. 
+It is important to note, that cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem.
+
+We can also plot the data:
+
+```{r plot sites, echo=FALSE}
+plot(sites@coords[, 1], sites@coords[, 2],
+     main = "Early Neolithic sites in Central Europe",
+     xlab = "[EPSG 25832]",
+     ylab = NA)
+```
 
 ## Largest Empty Circle
 
-### Creating of Voronoi polygons
+The "Largest Empty Circle" (LEC) or more precicely the radius/diameter of a LEC is a meassure of site distance. Every LEC has it's center at a vertix of a Voronoi polygon and exactly three sites are located on every periphery of a LEC. An illustartion can be found at *Zimmermann et al. (2004, Abb.5)*.  
+To summarize, areas with larger site distances will be characterized by larger radii of LECs and, logically, areas with smaller site distances will be characterized by smaller radii of LECs.
 
-### Extraction of vertices
+### Creating of Voronoi polygons and Extraction of vertices
+
+The first step is to calculate the voronoi polygons and to extract the vertices:
+
+```{r voronoi, message=FALSE}
+
+# calculate voronoi polygons
+voronoi_vertices <- deldir::deldir(sites@coords[, 1],
+                                   sites@coords[, 2]) %$%
+# extraction of vertices
+  dirsgs
+
+```
+
+After the extraction of the vertices from the Voronoi polygons they have to be prepared to enable a transformation into a spdf (SpatialPointsDataFrame):
+
+```{r vertices preparation}
+# rearrange voronoi_vertices in preparation for transformation into an spdf
+voronoi_vertices <- rbind(setNames(voronoi_vertices[,c(1:2, 5, 7, 9)],
+                                   c("x", "y", "ind", "bp", "thirdv")),
+                          setNames(voronoi_vertices[,c(3:4, 6, 8, 10)],
+                                   c("x", "y", "ind", "bp", "thirdv")))
+```
+
+Finally, it is possible to transform the vertices into a spdf. Please note that the projection is explicitly assigned to the newly created `vertices_spdf`, since we have found that problems can otherwise arise:
+
+```{r vertices transformation}
+# transformation of voronoi_vertices into an spdf
+vertices_spdf <- sp::SpatialPointsDataFrame(coords = voronoi_vertices[1:2],
+                                            data = voronoi_vertices[, 3:5])
+
+# Ignore warining! It's not a reprojection. But some functions need this step.
+sp::proj4string(vertices_spdf) <- sp::CRS("+init=epsg:25832")
+```
 
 ### Aggregation of verticies
+
+During the step of extracting the vertices we did not care about that some of them were dublicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artifical site distances and it must be decided in indiviual cases if the border points should be deleted or not.  
+In the present example application we have to remove the dublicates but we will keep the border points.
+
+```{r vertices aggregation}
+
+remove_border_points <- FALSE # Normally, this variable is defined in 00_LEC.R
+
+# If Condition wether border points are removed or not
+if(remove_border_points == TRUE){
+# remove dublicates and border points
+vertices_spdf <- sp::remove.duplicates(vertices_spdf) %>%
+  {.[.[[2]] == FALSE, ]}
+} else {
+  # just remove dublicates
+  vertices_spdf <- sp::remove.duplicates(vertices_spdf)  
+}
+```
+
 
 ### Defining the radius of the "Largest Empty Circle"
 
@@ -104,3 +168,6 @@ It is important to note, that cartesian coordinates (planar coord.) have to be u
 Preuss, J. (ed.) **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
 
 Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
+
+Zimmermann, A., Richter, J., Frank, T., Wendt, K.P., **2004**. Landschaftsarchäologie II. Überlegungen zu Prinzipien einer Landschaftsarchäologie. *Bericht der Römisch-Germanischen Kommission 85, 2004, 37-96*.
+
