@@ -73,3 +73,15 @@ rgdal::writeOGR(isoline_polygons,
                 driver = "ESRI Shapefile",
                 check_exists = TRUE,
                 overwrite_layer = TRUE)
+
+
+r <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
+                                      y = sp::coordinates(LEC_kriged)[,2],
+                                      z = LEC_kriged$var1.pred),
+                                    crs = sp::CRS(your_projection))
+
+
+# Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
+
+raster::writeRaster(r, "output/Kriging_raster.tif", format="GTiff", overwrite=T, prj=T)
+raster::writeRaster(r, "output/Kriging_raster.grd",format="raster", overwrite=T, prj=T)

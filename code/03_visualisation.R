@@ -38,10 +38,11 @@ legend(x = "topleft",
 plot(vertices_vario,
      vertices_vario_fit)
 
+# Zoom in on range and sill plateau (range and sill.platau + 20 %)
 plot(vertices_vario,
      vertices_vario_fit,
-     xlim = c(0, 40000),
-     ylim = c(0, 50000000))
+     xlim = c(0, range.plateau+(range.plateau/100)*20),
+     ylim = c(0, sill.plateau+(sill.plateau/100)*20))
 
 # Kriging results --------------------------------------------------------------
 LEC_kriged %>%
