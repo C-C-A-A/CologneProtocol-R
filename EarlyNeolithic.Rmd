@@ -19,21 +19,21 @@ The goal of the script is to carry out all steps of the first part of the Cologn
 
 1. **Calculating "Largest Empty Circle"**
 
-    i) Creating of Voronoi polygons
-    ii) Extraction of vertices
-    iii) Aggregation of verticies
-    iv) Defining the radius of the "Largest Empty Circle"
+    i) Creating of Voronoi Polygons
+    ii) Extraction of Vertices
+    iii) Aggregation of Verticies
+    iv) Defining the Radius of the "Largest Empty Circle"
 
 2. **Kriging**
 
-    i) Kriging - Preparation and Grid
-    ii) Kriging - Semivariogram
-    iii) Kriging - inspect and raster output
+    i) Preparation and Grid
+    ii) Semivariogram
+    iii) Inspect and Raster Output
 
 3. **Optimally Describing Isolines**
 
-    i) Creating contour lines (isolines)
-    ii) Calculating the area and number of sites per isoline
+    i) Creating Contour Lines (Isolines)
+    ii) Calculating the Area and Number of Sites per Ssoline
     iii) Selecting the "Optimally Describing Isoline"
 
 4. **Data export**
@@ -71,15 +71,33 @@ sp::proj4string(sites) <- sp::CRS("+init=epsg:25832")
 
 It is important to note, that cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem. 
 
-## Including Plots
+## Largest Empty Circle
 
-You can also embed plots, for example:
+### Creating of Voronoi polygons
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+### Extraction of vertices
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Aggregation of verticies
+
+### Defining the radius of the "Largest Empty Circle"
+
+## Kriging
+
+### Preparation and Grid
+
+### Semivariogram
+
+### Inspect and Raster Output
+
+## Optimally Describing Isolines
+
+### Creating Contour Lines (Isolines)
+
+### Calculating the Area and Number of Sites per Isoline
+
+### Selecting the "Optimally Describing Isoline"
+
+## Data Export
 
 ## Bibliography
 
