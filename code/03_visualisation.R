@@ -45,30 +45,26 @@ plot(vertices_vario,
      ylim = c(0, sill.plateau+(sill.plateau/100)*20))
 
 # Kriging results --------------------------------------------------------------
-LEC_kriged %>%
-  as.data.frame() %>%
-  ggplot2::ggplot(ggplot2::aes(x = x, y = y)) +
-  ggplot2::geom_tile(ggplot2::aes(fill = var1.pred)) +
+LEC_kriged %>% as.data.frame %>%
+  ggplot2::ggplot(ggplot2::aes(x=x, y=y)) +  
+  ggplot2::geom_tile(ggplot2::aes(fill=var1.pred))+
   ggplot2::coord_equal() +
-  ggplot2::scale_fill_gradient2(midpoint = mean(LEC_kriged$var1.pred),
-                                low = "red",
-                                mid = "yellow",
-                                high = "green") +
+  ggplot2::scale_fill_gradientn(colours = terrain.colors(255)) +
+  ggplot2::theme_bw() +
   ggplot2::geom_point(data = as.data.frame(sites),
-                      ggplot2::aes(x = coords.x1, y = coords.x2)) +
-  ggplot2::theme_bw()
+                      ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
+                      colour = "black", fill= "red", alpha=1/5)
 
 # Variance of kriging results --------------------------------------------------
-LEC_kriged %>%
-  as.data.frame() %>%
-  ggplot2::ggplot(ggplot2::aes(x = x, y = y)) +
-  ggplot2::geom_tile(ggplot2::aes(fill = var1.var)) +
+LEC_kriged %>% as.data.frame %>%
+  ggplot2::ggplot(ggplot2::aes(x=x, y=y)) + 
+  ggplot2::geom_tile(ggplot2::aes(fill=var1.var)) + 
   ggplot2::coord_equal() +
-  ggplot2::scale_fill_gradient(low = "yellow",
-                               high = "red") +
+  ggplot2::scale_fill_gradient(low = "yellow", high="red") +
+  ggplot2::theme_bw() +
   ggplot2::geom_point(data = as.data.frame(sites),
-                      ggplot2::aes(x = coords.x1, y = coords.x2)) +
-  ggplot2::theme_bw()
+                      ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
+                      colour = "white", fill= "black", alpha=1/2)
 
 # Plot of descriptive properties of isolines -----------------------------------
 
