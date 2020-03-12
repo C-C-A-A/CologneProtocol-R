@@ -44,17 +44,16 @@ Isolines_increase <- data.frame(km_isoline = integer(length(sites_n[-1])), # num
                                 increase_Area = integer(length(sites_n[-1])),
                                 stringsAsFactors = FALSE)
 
-equidst_km <- (Isolines_stats$km_isoline[2]-Isolines_stats$km_isoline[1])/1000
 
 # calculate increase in numbers of site per km
-Isolines_increase[, 2] <- c(sites_n[-1]) / (equidst_km) # Zimmermann et al. 2004, Tab. 1
+Isolines_increase[, 2] <- c(sites_n[-1])
 
 
 # insert name of isolines
 Isolines_increase[, 1] <- isoline_polygons@data[-c(1), 1] # '-c(1)' is used to remove name of first isoline
 
 # calculate increase in area of polygon per km
-Isolines_increase[, 3] <- c(iso_area[-1]) / (equidst_km) # Zimmermann et al. 2004, Tab. 1
+Isolines_increase[, 3] <- c(iso_area[-1])
 
 # Difference in increase of number of sites and area per km --------------------
 
