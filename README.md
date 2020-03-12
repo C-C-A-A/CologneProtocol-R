@@ -12,7 +12,7 @@ The files at the URL above are linked to the publication and represent the versi
 
 Manuel Broich (_email ?!_)
 
-Robin Peters (_email ?!_)
+Robin Peters (mail@robinpeters.net)
 
 ### Published in:
 
