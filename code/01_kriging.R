@@ -13,7 +13,7 @@ vertices_vario <- gstat::variogram(radiusLEC~1,
                                    width = sp::spDists(
                                      t(vertices_spdf@bbox))[1, 2]/250)
 
-# Identify first plateau for fitting theoretical variogram
+# Identify first plateau for fitting theoretical variogram  
 range.plateau <- vertices_vario %$%
   gamma %>%
   diff() %>%
@@ -66,6 +66,8 @@ isoline_polygons@data[, 1] <- your_isoline_steps[-1]
 
 # Save data --------------------------------------------------------------------
 
+if(export_raster == TRUE){
+
 # Polygons of isolines as shape file
 rgdal::writeOGR(isoline_polygons,
                 dsn = "output",
@@ -74,14 +76,29 @@ rgdal::writeOGR(isoline_polygons,
                 check_exists = TRUE,
                 overwrite_layer = TRUE)
 
+# Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
 
+# Kriging-Results
 r <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
                                       y = sp::coordinates(LEC_kriged)[,2],
                                       z = LEC_kriged$var1.pred),
                                     crs = sp::CRS(your_projection))
 
 
-# Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
 
 raster::writeRaster(r, "output/Kriging_raster.tif", format="GTiff", overwrite=T, prj=T)
 raster::writeRaster(r, "output/Kriging_raster.grd",format="raster", overwrite=T, prj=T)
+
+
+# Variance (Quality Measure)
+v <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
+                                      y = sp::coordinates(LEC_kriged)[,2],
+                                      z = LEC_kriged$var1.var),
+                           crs = sp::CRS(your_projection))
+
+
+
+  raster::writeRaster(v, "output/Variance_raster.tif", format="GTiff", overwrite=T, prj=T)
+raster::writeRaster(v, "output/Variance_raster.grd",format="raster", overwrite=T, prj=T)
+
+}
