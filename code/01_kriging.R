@@ -7,11 +7,16 @@ options(scipen = 999)
 
 # Variogram --------------------------------------------------------------------
 
+# Define Bounding Box Diagonal
+bbox_diag <- sp::spDists(t(vertices_spdf@bbox))[1, 2]
+
+# Lagdistance = Bounding Box Diagonal / 250
+lagdist <- bbox_diag/250
+
 # Sample variogram
 vertices_vario <- gstat::variogram(radiusLEC~1,
                                    vertices_spdf,
-                                   width = sp::spDists(
-                                     t(vertices_spdf@bbox))[1, 2]/250)
+                                   width = lagdist)
 
 # Identify first plateau for fitting theoretical variogram  
 range.plateau <- vertices_vario %$%
@@ -49,7 +54,7 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
                            model = vertices_vario_fit,
                            nmin = 3,
                            nmax = 10,
-                           maxdist = sp::spDists(t(vertices_spdf@bbox))[1, 2]/2,
+                           maxdist = bbox_diag/2,
                            debug.level = -1)
 
 # Create isolines ------------------------------------------------------------
