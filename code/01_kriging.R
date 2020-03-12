@@ -94,11 +94,11 @@ raster::writeRaster(r, "output/Kriging_raster.grd",format="raster", overwrite=T,
 v <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
                                       y = sp::coordinates(LEC_kriged)[,2],
                                       z = LEC_kriged$var1.var),
-                           crs = sp::CRS(your_projection))
+                                    crs = sp::CRS(your_projection))
 
 
 
-  raster::writeRaster(v, "output/Variance_raster.tif", format="GTiff", overwrite=T, prj=T)
+raster::writeRaster(v, "output/Variance_raster.tif", format="GTiff", overwrite=T, prj=T)
 raster::writeRaster(v, "output/Variance_raster.grd",format="raster", overwrite=T, prj=T)
 
 }
