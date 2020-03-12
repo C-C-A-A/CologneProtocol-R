@@ -17,7 +17,8 @@ options(scipen = 999)
 your_projection <- "+init=epsg:25832" # the projection of your data
 your_grid_spacing <- 500 # choose some value [m] between 200 and 1000 
 your_isoline_steps <- seq(0, 10000, 500) # min, max, step (equidistance)
-remove_border_points <- FALSE # Boolean (TRUE/FALSE), wether border points are removed or not
+remove_border_points <- TRUE # Boolean (TRUE/FALSE), wether border points are removed or not
+export_raster <- TRUE # Boolean (TRUE/FALSE), wether kriging and variance raster are exported
 
 # variables used for kriging
 your_model <- c("Sph") # choose from gstat::show.vgm(), 
