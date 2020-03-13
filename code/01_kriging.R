@@ -67,7 +67,7 @@ isoline_polygons <- LEC_kriged %>%
   inlmisc::Grid2Polygons(level = TRUE, at = your_isoline_steps)
 
 # Rename the isolines because Grid2Polygon names them with the middle value
-isoline_polygons@data[, 1] <- your_isoline_steps[-1]
+isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@data[, 1])+1)]
 
 # Save data --------------------------------------------------------------------
 
@@ -81,6 +81,10 @@ rgdal::writeOGR(isoline_polygons,
                 check_exists = TRUE,
                 overwrite_layer = TRUE)
 
+# Rewrite .prj-File with WKT
+rgdal::showWKT(your_projection, file="output/isoline_polygons.prj")
+
+  
 # Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
 
 # Kriging-Results
@@ -91,8 +95,8 @@ r <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
 
 
 
-raster::writeRaster(r, "output/Kriging_raster.tif", format="GTiff", overwrite=T, prj=T)
-raster::writeRaster(r, "output/Kriging_raster.grd",format="raster", overwrite=T, prj=T)
+raster::writeRaster(r, "output/Kriging_raster.tif", format="GTiff", overwrite=T)
+raster::writeRaster(r, "output/Kriging_raster.grd",format="raster", overwrite=T)
 
 
 # Variance (Quality Measure)
