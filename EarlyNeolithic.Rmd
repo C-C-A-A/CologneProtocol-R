@@ -161,7 +161,7 @@ par(xpd = TRUE) # plot legend outside
 plot(vertices_spdf@coords[,1], vertices_spdf@coords[,2],
      type = "n",
      asp = 1,
-     main = "Sites and corresponding voronoi diagram",
+     main = "Sites and corresponding Voronoi diagram",
      xlab = NA,
      ylab = "[EPSG 31467]")
 points(sites,
@@ -195,6 +195,8 @@ The next part of this document will describe the used Kriging procedure to estim
 
 ### Preparation and Grid
 
+For kriging we need a grid of evenly distributed points. The algorithm will estimate the site distance (radius LEC) at every point of the grid based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)*.
+
 ### Semivariogram
 
 ### Inspect and Raster Output
@@ -211,7 +213,9 @@ The next part of this document will describe the used Kriging procedure to estim
 
 ## Bibliography
 
-Preuss, J. (ed.) **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
+Hengel, T., **2007**. A Practical Guide to Geostatistical Mapping of Environmental Variables. (Uxembourg 2007).
+
+Preuss, J. (ed.), **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
 
 Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
 
