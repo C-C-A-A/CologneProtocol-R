@@ -79,8 +79,13 @@ rgdal::writeOGR(isoline_polygons,
                 layer = "isoline_polygons",
                 driver = "ESRI Shapefile",
                 check_exists = TRUE,
-                overwrite_layer = TRUE)
+                overwrite_layer = TRUE,
+                verbose=TRUE)
 
+# Rewrite .prj-File with WKT
+rgdal::showWKT(your_projection, file="output/isoline_polygons.prj")
+
+  
 # Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
 
 # Kriging-Results
