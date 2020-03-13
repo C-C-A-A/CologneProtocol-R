@@ -10,7 +10,7 @@ The files at the URL above are linked to the publication and represent the versi
 
 ### Authors of this repository:
 
-Manuel Broich (_email ?!_)
+Manuel Broich (mbroich@smail.uni-koeln.de)
 
 Robin Peters (mail@robinpeters.net)
 
@@ -32,7 +32,7 @@ Very short overview of what the script does..
 
 ### Licence
 
-Code: MIT (http://opensource.org/licenses/MIT year: 2020, copyright holders: Manuel Broich and Robin Peters)
+Code: MIT (http://opensource.org/licenses/MIT) year: 2020, copyright holders: Manuel Broich and Robin Peters)
 
 ### Dependencies
 
