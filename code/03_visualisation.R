@@ -7,7 +7,7 @@ options(scipen = 999)
 
 # Plot of archaeological sites and Thiessen polygons ------------------------
 
-plot(sites@coords[,1], sites@coords[,2],
+plot(vertices_spdf@coords[,1], vertices_spdf@coords[,2],
      type = "n",
      asp = 1,
      main = "Sites and corresponding voronoi diagram",
