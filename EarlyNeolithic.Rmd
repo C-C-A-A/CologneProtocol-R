@@ -64,10 +64,10 @@ sites <- read.csv(url(url_link))
 sites <- sp::SpatialPointsDataFrame(sp::SpatialPoints(
   cbind(sites$RECHTS, sites$HOCH)),
   sites,
-  proj4string = CRS("+init=epsg:25832"))
+  proj4string = CRS("+init=epsg:31467"))
 
 # This is not a reprojection, but some function if the projection is not defined like this
-sp::proj4string(sites) <- sp::CRS("+init=epsg:25832")
+sp::proj4string(sites) <- sp::CRS("+init=epsg:31467")
 
 ```
 
@@ -78,7 +78,7 @@ We can also plot the data:
 ```{r plot sites, echo=FALSE}
 plot(sites@coords[, 1], sites@coords[, 2],
      main = "Early Neolithic sites in Central Europe",
-     xlab = "[EPSG 25832]",
+     xlab = "[EPSG 31467]",
      ylab = NA)
 ```
 
@@ -96,12 +96,12 @@ The first step is to calculate the voronoi polygons and to extract the vertices:
 # calculate voronoi polygons
 voronoi_vertices <- deldir::deldir(sites@coords[, 1],
                                    sites@coords[, 2]) %$%
-# extraction of vertices
+  # extraction of vertices
   dirsgs
 
 ```
 
-After the extraction of the vertices from the Voronoi polygons they have to be prepared to enable a transformation into a spdf (SpatialPointsDataFrame):
+After the extraction of the vertices from the Voronoi polygons, they have to be prepared to enable a transformation into an spdf (SpatialPointsDataFrame):
 
 ```{r vertices preparation}
 # rearrange voronoi_vertices in preparation for transformation into an spdf
@@ -111,7 +111,7 @@ voronoi_vertices <- rbind(setNames(voronoi_vertices[,c(1:2, 5, 7, 9)],
                                    c("x", "y", "ind", "bp", "thirdv")))
 ```
 
-Finally, it is possible to transform the vertices into a spdf. Please note that the projection is explicitly assigned to the newly created `vertices_spdf`, since we have found that problems can otherwise arise:
+Finally, it is possible to transform the vertices into an spdf. Please note that the projection is explicitly assigned to the newly created `vertices_spdf`, since we have found that otherwise problems can arise:
 
 ```{r vertices transformation}
 # transformation of voronoi_vertices into an spdf
@@ -119,7 +119,7 @@ vertices_spdf <- sp::SpatialPointsDataFrame(coords = voronoi_vertices[1:2],
                                             data = voronoi_vertices[, 3:5])
 
 # Ignore warining! It's not a reprojection. But some functions need this step.
-sp::proj4string(vertices_spdf) <- sp::CRS("+init=epsg:25832")
+sp::proj4string(vertices_spdf) <- sp::CRS("+init=epsg:31467")
 ```
 
 ### Aggregation of verticies
@@ -142,10 +142,56 @@ vertices_spdf <- sp::remove.duplicates(vertices_spdf) %>%
 }
 ```
 
-
 ### Defining the radius of the "Largest Empty Circle"
 
+In the following step we calculate the distance between a vertex of a Voronoi polygon and its nearest site. This distance is the radius of a LEC and will be assigned to the corresponding vertex.
+
+```{r radius LEC}
+# calculate radius of LEC and add this information to vertices_spdf
+vertices_spdf@data$radiusLEC <- rgeos::gDistance(sites,
+                                                 vertices_spdf,
+                                                 byid = TRUE) %>%
+  apply(1, min)
+```
+
+Below you see a plot of the archaeological sites and the Voronoi polygons with their vertices. The problem of the border points becomes visible in this figure. They are created at the edge of the working area and thus do not reflect actual site distances.
+
+```{r Voronoi plot, echo=FALSE}
+par(xpd = TRUE) # plot legend outside 
+plot(vertices_spdf@coords[,1], vertices_spdf@coords[,2],
+     type = "n",
+     asp = 1,
+     main = "Sites and corresponding voronoi diagram",
+     xlab = NA,
+     ylab = "[EPSG 31467]")
+points(sites,
+       pch = 20,
+       col = "red")
+points(vertices_spdf,
+       pch = 20,
+       col = "black",
+       cex = 0.9)
+plot(deldir::deldir(sites@coords[,1], sites@coords[,2]),
+     wlines = "tess",
+     wpoints = "none",
+     number = FALSE,
+     lty = 1,
+     add = TRUE)
+legend(x = 2800000, y = 5000000,
+       legend = c("Archaeological sites", "Voronoi vertices", "Voronoi polygons"),
+       pch = c(20, 20, NA),
+       lty = c(NA, NA, 1),
+       col = c("red", "black", "black"),
+       merge = TRUE,
+       bty = "n",
+       bg = "transparent",
+       horiz = TRUE)
+```
+
+
 ## Kriging
+
+The next part of this document will describe the used Kriging procedure to estimate site distances on a regular spaced grid within the working area. These estimated site distances form the basis of the creation of isolines.
 
 ### Preparation and Grid
 

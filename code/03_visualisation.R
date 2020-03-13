@@ -7,7 +7,7 @@ options(scipen = 999)
 
 # Plot of archaeological sites and Thiessen polygons ------------------------
 
-plot(sites@coords[,1], sites@coords[,2],
+plot(vertices_spdf@coords[,1], vertices_spdf@coords[,2],
      type = "n",
      asp = 1,
      main = "Sites and corresponding voronoi diagram",
@@ -26,7 +26,7 @@ plot(deldir::deldir(sites@coords[,1], sites@coords[,2]),
      lty = 1,
      add = TRUE)
 legend(x = "topleft",
-       legend = c("Archaeological sites", "Thiessen vertices", "Thiessen polygons"),
+       legend = c("Archaeological sites", "Voronoi vertices", "Voronoi polygons"),
        pch = c(20, 20, NA),
        lty = c(NA, NA, 1),
        col = c("red", "black", "black"),
