@@ -178,7 +178,7 @@ plot(deldir::deldir(sites@coords[,1], sites@coords[,2]),
      lty = 1,
      add = TRUE)
 legend(x = 2800000, y = 5000000,
-       legend = c("Archaeological sites", "Thiessen vertices", "Thiessen polygons"),
+       legend = c("Archaeological sites", "Voronoi vertices", "Voronoi polygons"),
        pch = c(20, 20, NA),
        lty = c(NA, NA, 1),
        col = c("red", "black", "black"),
