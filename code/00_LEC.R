@@ -14,7 +14,7 @@ options(scipen = 999)
 # Definition of used variables throughout the script ---------------------------
 
 # variables used for loading and creating data 
-your_projection <- "+init=epsg:25832" # the projection of your data
+your_projection <- "+init=epsg:31467" # the projection of your data
 your_grid_spacing <- 500 # choose some value [m] between 200 and 1000 
 your_isoline_steps <- seq(0, 10000, 500) # min, max, step (equidistance)
 remove_border_points <- TRUE # Boolean (TRUE/FALSE), wether border points are removed or not
