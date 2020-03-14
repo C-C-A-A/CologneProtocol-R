@@ -195,7 +195,24 @@ The next part of this document will describe the used Kriging procedure to estim
 
 ### Preparation and Grid
 
-For kriging we need a grid of evenly distributed points. The algorithm will estimate the site distance (radius LEC) at every point of the grid based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)*.
+For kriging we need a grid of evenly distributed points. The algorithm will estimate the site distance (radius LEC) at every point of the grid, based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)* including kriging in R.  
+The grid spacing to be selected depends on various factors. The size of the working area or the regular distances between the archaeological sites are an important factor. In addition, the selected grid spacing will significantly influence the computing time required, because a shorter grid distance will create more points.  
+For the current example we will create a grid with a spacing of 1000 m between each point. This is a comparable large spacing but the working area is spanning most of Central Europe, which is a quite large area.
+
+```{r Grid}
+# Create a grid for kriging
+grid <- expand.grid(x = seq(as.integer(range(vertices_spdf@coords[, 1]))[1],
+                            as.integer(range(vertices_spdf@coords[, 1]))[2],
+                            by = 1000),
+                    y = seq(as.integer(range(vertices_spdf@coords[, 2]))[1],
+                            as.integer(range(vertices_spdf@coords[, 2]))[2],
+                            by = 1000)) %>%
+  {sp::SpatialPoints(coords = .[1:2], proj4string = sp::CRS("+init=epsg:31467"))}
+```
+
+The generated grid consits of `r length(grid@coords[, 1])` points, at which the radius of the LEC is estimated by kriging.
+
+
 
 ### Semivariogram
 
