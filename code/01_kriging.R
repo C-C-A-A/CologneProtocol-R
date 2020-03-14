@@ -66,6 +66,9 @@ isoline_polygons <- LEC_kriged %>%
   as("SpatialGridDataFrame") %>%
   inlmisc::Grid2Polygons(level = TRUE, at = your_isoline_steps)
 
+# This is not a reprojection!
+sp::proj4string(isoline_polygons) <- sp::CRS(your_projection)
+
 # Rename the isolines because Grid2Polygon names them with the middle value
 isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@data[, 1])+1)]
 
