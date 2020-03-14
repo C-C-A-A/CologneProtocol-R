@@ -8,7 +8,12 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+# package magrittr is needed to execude the used pipes
 library("magrittr")
+
+# Turn scientific notation off
+options(scipen = 999)
+
 ```
 
 ## Introduction
@@ -30,7 +35,8 @@ The goal of the script is to carry out all steps of the first part of the Cologn
 
     i) Preparation and Grid
     ii) Semivariogram
-    iii) Inspect and Raster Output
+    iii) Kriging
+    iv) Kriging Results
 
 3. **Optimally Describing Isolines**
 
@@ -212,11 +218,116 @@ grid <- expand.grid(x = seq(as.integer(range(vertices_spdf@coords[, 1]))[1],
 
 The generated grid consits of `r length(grid@coords[, 1])` points, at which the radius of the LEC is estimated by kriging.
 
-
-
 ### Semivariogram
 
-### Inspect and Raster Output
+The kriging procedure requires a theoretical semivariogram, which is used to estimate the radii of the LEC at every point of the grid. To compute this theoritical semivariogram, we need to explore first a experimental semivariogram. At this point we will refer again to *Hengel (2007)* as we will give no introduction to kriging in general.  
+Before we can inspect the experimental semivariogram we have to define a lag distance:
+
+```{r lag distance}
+# Define Bounding Box Diagonal
+bbox_diag <- sp::spDists(t(vertices_spdf@bbox))[1, 2]
+
+# Lagdistance = Bounding Box Diagonal / 250
+lagdist <- bbox_diag/250
+```
+
+Now it is possible compute the experimental semivariogram:
+
+```{r exp vario}
+# Sample variogram
+vertices_vario <- gstat::variogram(radiusLEC~1,
+                                   vertices_spdf,
+                                   width = lagdist)
+```
+
+With the help of the experimental semivariogram, which you can see below, we can compute a theoretical semivariogram.
+
+```{r plot exp vario, echo=FALSE}
+plot(vertices_vario)
+```
+
+Doing so, we will need to identify the first plateu of the experimental semivariogram. According to *Zimmermann et al. (2004, 52)* the sill value of the theoretical semivariogram should be fitted to the first plateau of the experimental semivariogram. Additionally, the nugget value should be set to zero.  
+In the current example we will identify the first plateau automatically. Of course it is also possible to choose these values by hand.
+
+```{r plateau}
+# Identify first plateau for fitting theoretical variogram  
+range.plateau <- vertices_vario %$%
+  gamma %>%
+  diff() %>%
+  {vertices_vario[2][which.max(./.[1] < 0.1), ]}
+
+sill.plateau <- vertices_vario$gamma[vertices_vario$dist == range.plateau]
+```
+
+Lastly, we have to choose a model for the fitting of the theoretical semivariogram. The function `gstat::show.vgm()` will show you all available models. We, however, recommend to use the exponential "Exp" or spherical "Sph" model.  
+In the current example we will use a spherical Model:
+
+```{r fitting vario}
+# Fitting theoretical variogram
+vertices_vario_fit <- gstat::fit.variogram(vertices_vario,
+                                           gstat::vgm(nugget = 0,
+                                                      model  = "Sph",
+                                                      psill  = sill.plateau,
+                                                      range  = range.plateau),
+                                           fit.sills = FALSE,
+                                           fit.ranges = FALSE)
+```
+
+Comparing the experimental and the theoretical variogram shows that we more or less archived a good fit.
+
+```{r plot fitted vario, echo=FALSE}
+# Zoom in on range and sill plateau (range and sill.platau + 20 %)
+plot(vertices_vario,
+     vertices_vario_fit,
+     xlim = c(0, range.plateau+(range.plateau/100)*20),
+     ylim = c(0, sill.plateau+(sill.plateau/100)*20))
+```
+
+### Kriging
+
+Now we have every information for the kriging procedure. The only three variables we have to define are `nmin`, `nmax` and `maxdist` in the `gstat::krige()` function. `nmin` and `nmax` are in our case the minimum and maximum number of Voronoi vertices, which will be considered by the kriging algorithm. Furthermore, we define that only observations (vertices) within a range of half of the bounding box diagonal will be used (`maxdist`). These are the default values for the Cologne Protocol.
+
+```{r kriging}
+# Kriging
+LEC_kriged <- gstat::krige(radiusLEC~1,
+                           vertices_spdf,
+                           grid,
+                           model = vertices_vario_fit,
+                           nmin = 3,
+                           nmax = 10,
+                           maxdist = bbox_diag/2,
+                           debug.level = 0)
+```
+
+### Kriging Results
+
+The results of the kriging procedure can be visualized by two plots. The first one shows the estimated radii of the LECs at every point of the created grid:
+
+```{r krige results, echo=FALSE}
+LEC_kriged %>% as.data.frame %>%
+  ggplot2::ggplot(ggplot2::aes(x=x, y=y)) +  
+  ggplot2::geom_tile(ggplot2::aes(fill=var1.pred))+
+  ggplot2::coord_equal() +
+  ggplot2::scale_fill_gradientn(colours = terrain.colors(255)) +
+  ggplot2::theme_bw() +
+  ggplot2::geom_point(data = as.data.frame(sites),
+                      ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
+                      colour = "black", fill= "red", alpha=1/5)
+```
+and the second shows the variance of the kriging results, which is a meassure of quality:
+
+```{r kriging variance, echo=FALSE}
+LEC_kriged %>% as.data.frame %>%
+  ggplot2::ggplot(ggplot2::aes(x=x, y=y)) + 
+  ggplot2::geom_tile(ggplot2::aes(fill=var1.var)) + 
+  ggplot2::coord_equal() +
+  ggplot2::scale_fill_gradient(low = "yellow", high="red") +
+  ggplot2::theme_bw() +
+  ggplot2::geom_point(data = as.data.frame(sites),
+                      ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
+                      colour = "white", fill= "black", alpha=1/2)
+```
+
 
 ## Optimally Describing Isolines
 
