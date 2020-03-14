@@ -314,7 +314,8 @@ LEC_kriged %>% as.data.frame %>%
                       ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
                       colour = "black", fill= "red", alpha=1/5)
 ```
-and the second shows the variance of the kriging results, which is a meassure of quality:
+
+The second shows the variance of the kriging results, which is a meassure of quality:
 
 ```{r kriging variance, echo=FALSE}
 LEC_kriged %>% as.data.frame %>%
@@ -328,10 +329,36 @@ LEC_kriged %>% as.data.frame %>%
                       colour = "white", fill= "black", alpha=1/2)
 ```
 
-
 ## Optimally Describing Isolines
 
+On the basis of the kriging results we will create isolines and we will select an "Optimally Describing Isoline" (ODI) out of these. The selection of the ODI is based upon several statistical parameters of the isolines.
+
 ### Creating Contour Lines (Isolines)
+
+In order to create isolines we need to transform the output of the `gstat::krige()` function, which is a raster, into `SpatialPolygonsDataFrame`. These have the advantage that statistics like the number of archaeological sites in an isoline can easily be calculated. One disadvantage is, that this transformation does take time.  
+A fast way of this working step is to transform the raster first into a `SpatialGridDataFrame` and afterwards to use the function `inlmisc::Grid2Polygons()`:
+
+```{r creating polygons}
+isoline_polygons <- LEC_kriged %>%
+  {raster::rasterFromXYZ(data.frame(x = sp::coordinates(.)[, 1],
+                                  y = sp::coordinates(.)[, 2],
+                                  z = .[[1]]),
+                         crs = sites@proj4string)} %>%
+  as("SpatialGridDataFrame") %>%
+  inlmisc::Grid2Polygons(level = TRUE, at = seq(0, 20000, 500))
+
+# This is not a reprojection!
+sp::proj4string(isoline_polygons) <- sp::CRS("+init=epsg:31467")
+```
+
+Additionally, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with the middle value of each step, e.g. 1750 instead of 2000 in current example.
+
+```{r renaming polygons}
+# Rename the isolines because Grid2Polygon names them with the middle value
+isoline_polygons@data[, 1] <- seq(0, 20000, 500)[2:c(length(isoline_polygons@data[, 1])+1)]
+```
+
+
 
 ### Calculating the Area and Number of Sites per Isoline
 
