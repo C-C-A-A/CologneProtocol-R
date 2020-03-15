@@ -13,6 +13,10 @@ Isolines_stats <- data.frame(km_isoline = integer(),
                              number_Sites = integer(), 
                              percent_Sites = integer(),
                              Area = integer(),
+                             increase_Sites = integer(),
+                             increase_Area = integer(),
+                             diff_Sites = integer(),
+                             diff_Area = integer(),
                              stringsAsFactors = FALSE)
 
 # Counting the numbers of distinct areas per isoline
@@ -36,47 +40,26 @@ iso_area <- raster::area(isoline_polygons)/1000000
 Isolines_stats$Area <- cumsum(iso_area)
 
 
-# Increase of number of sites and area per km ----------------------------------
+# Increase of number of sites and area per equidistance ------------------------
 
-# Initialize data.frame
-Isolines_increase <- data.frame(km_isoline = integer(length(sites_n[-1])), # number of columns needs to be specified
-                                increase_Sites = integer(length(sites_n[-1])), 
-                                increase_Area = integer(length(sites_n[-1])),
-                                stringsAsFactors = FALSE)
+# calculate increase in numbers of sites per equidistance
+Isolines_stats$increase_Sites <- c(NA, sites_n[-1])
 
-
-# calculate increase in numbers of site per km
-Isolines_increase[, 2] <- c(sites_n[-1])
+# calculate increase in area of polygon per equidistance
+Isolines_stats$increase_Area <- c(NA, iso_area[-1])
 
 
-# insert name of isolines
-Isolines_increase[, 1] <- isoline_polygons@data[-c(1), 1] # '-c(1)' is used to remove name of first isoline
+# Difference in increase of number of sites and area per equidistance ----------
 
-# calculate increase in area of polygon per km
-Isolines_increase[, 3] <- c(iso_area[-1])
+# Calculate difference of increase of number of sites per equidistance
+Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 6]))
 
-# Difference in increase of number of sites and area per km --------------------
-
-# Initialize data.frame
-Isolines_diff <- data.frame(km_isoline = integer(length(sites_n[-1]) - 1), # number of columns needs to be specified
-                            diff_Sites = integer(length(sites_n[-1]) - 1), 
-                            diff_Area = integer(length(sites_n[-1]) - 1),
-                            stringsAsFactors = FALSE)
-
-# Calculate difference of increase of number of site per km
-Isolines_diff[, 2] <- diff(Isolines_increase[, 2])
-
-# Insert name of isolines
-Isolines_diff[, 1] <- isoline_polygons@data[-c(1, 2), 1]
-
-# Calculate difference in increase of area per km
-Isolines_diff[, 3] <- diff(Isolines_increase[, 3])
+# Calculate difference in increase of area per equidistance
+Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 7]))
 
 
 # Change units of all data.frames ----------------------------------------------
 Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000
-Isolines_increase[, 1] <- Isolines_increase[, 1] / 1000
-Isolines_diff[, 1] <- Isolines_diff[, 1] / 1000
 
 
 # Save data --------------------------------------------------------------------
@@ -87,14 +70,3 @@ write.table(Isolines_stats,
             sep = ";",
             dec = ",")
 
-# Isoline_increase
-write.table(Isolines_increase,
-            "output/Isolines_increase.csv",
-            sep = ";",
-            dec = ",")
-
-# Isoline_diffrence
-write.table(Isolines_diff,
-            "output/Isolines_difference.csv",
-            sep = ";",
-            dec = ",")
