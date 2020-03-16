@@ -73,7 +73,7 @@ Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Area)) +
   ggplot2::geom_line() +
   ggplot2::geom_point() +
-  ggplot2::labs(title = "Number of distinct areas per Isoline",
+  ggplot2::labs(title = "Number of areas with a specific site density",
                 x = "Isoline [km]",
                 y = "Number of distinct areas") +
   ggplot2::scale_x_continuous(limit = your_limit,
