@@ -28,7 +28,7 @@ for (i in 1:length(isoline_polygons)) {
 # Insert name of isolines
 Isolines_stats[, 1] <- isoline_polygons@data[, 1]
 
-# Calculate number of sites within each isoline
+# Calculate number of sites within within a certain site distance
 sites_n <- sapply(sp::over(isoline_polygons, sites, returnList = TRUE), nrow)
 Isolines_stats$number_Sites <- cumsum(sites_n)
 
