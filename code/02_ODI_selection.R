@@ -14,8 +14,8 @@ Isolines_stats <- data.frame(km_isoline = integer(),
                              percent_Sites = integer(),
                              Area = integer(),
                              increase_Sites = integer(),
-                             increase_Area = integer(),
                              diff_Sites = integer(),
+                             increase_Area = integer(),
                              diff_Area = integer(),
                              stringsAsFactors = FALSE)
 
@@ -55,7 +55,7 @@ Isolines_stats$increase_Area <- c(NA, iso_area[-1])
 Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 6]))
 
 # Calculate difference in increase of area per equidistance
-Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 7]))
+Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 8]))
 
 
 # Change units of all data.frames ----------------------------------------------
