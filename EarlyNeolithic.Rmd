@@ -49,13 +49,13 @@ The goal of the script is to carry out all steps of the first part of the Cologn
 
 ## Dependencies
 
-To run the code of the script several packages are needed. These dependencies are stored in the `deps.yaml` file. It is possible to load them manually or to use `automagic::install_deps_file()` function. If the package `automagic` is not installed, it is possible to intsall it with `install.packages("automagic")`.  
+To run the code of the script several packages are needed. These dependencies are stored in the `deps.yaml` file. It is possible to load them manually or to use `automagic::install_deps_file()` function. If the package `automagic` is not installed, it is possible to install it with `install.packages("automagic")`.  
 Furthermore the script was developed under R version 3.6.3.
 
 
 ## Sample Data
 
-For this examplary application, we use a distribution map of the Early Neolithic Linear Pottery Culture (LBK) in Central Europe. The map is based on *Preuss (1998, Karte 1)* and available from the CRC 806 database (https://crc806db.uni-koeln.de/start/).
+For this exemplary application, we use a distribution map of the Early Neolithic Linear Pottery Culture (LBK) in Central Europe. The map is based on *Preuss (1998, Karte 1)* and available from the CRC 806 database (https://crc806db.uni-koeln.de/start/).
 
 The distribution map can be loaded into R via URL: 
 
@@ -77,7 +77,7 @@ sp::proj4string(sites) <- sp::CRS("+init=epsg:31467")
 
 ```
 
-It is important to note, that cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem.
+It is important to note, that Cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem.
 
 We can also plot the data:
 
@@ -90,7 +90,7 @@ plot(sites@coords[, 1], sites@coords[, 2],
 
 ## Largest Empty Circle
 
-The "Largest Empty Circle" (LEC) or more precicely the radius/diameter of a LEC is a meassure of site distance. Every LEC has it's center at a vertix of a Voronoi polygon and exactly three sites are located on every periphery of a LEC. An illustartion can be found at *Zimmermann et al. (2004, Abb.5)*.  
+The "Largest Empty Circle" (LEC) or more precisely the radius/diameter of a LEC is a measure of site distance. Every LEC has it's center at a vertex of a Voronoi polygon and exactly three sites are located on every periphery of a LEC. An illustration can be found at *Zimmermann et al. (2004, Abb.5)*.  
 To summarize, areas with larger site distances will be characterized by larger radii of LECs and, logically, areas with smaller site distances will be characterized by smaller radii of LECs.
 
 ### Creating of Voronoi polygons and Extraction of vertices
@@ -128,10 +128,10 @@ vertices_spdf <- sp::SpatialPointsDataFrame(coords = voronoi_vertices[1:2],
 sp::proj4string(vertices_spdf) <- sp::CRS("+init=epsg:31467")
 ```
 
-### Aggregation of verticies
+### Aggregation of vertices
 
-During the step of extracting the vertices we did not care about that some of them were dublicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artifical site distances and it must be decided in indiviual cases if the border points should be deleted or not.  
-In the present example application we have to remove the dublicates but we will keep the border points.
+During the step of extracting the vertices we did not care about that some of them were duplicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artificial site distances and it must be decided in individual cases if the border points should be deleted or not.  
+In the present example application we have to remove the duplicates but we will keep the border points.
 
 ```{r vertices aggregation}
 
@@ -216,11 +216,11 @@ grid <- expand.grid(x = seq(as.integer(range(vertices_spdf@coords[, 1]))[1],
   {sp::SpatialPoints(coords = .[1:2], proj4string = sp::CRS("+init=epsg:31467"))}
 ```
 
-The generated grid consits of `r length(grid@coords[, 1])` points, at which the radius of the LEC is estimated by kriging.
+The generated grid consists of `r length(grid@coords[, 1])` points, at which the radius of the LEC is estimated by kriging.
 
 ### Semivariogram
 
-The kriging procedure requires a theoretical semivariogram, which is used to estimate the radii of the LEC at every point of the grid. To compute this theoritical semivariogram, we need to explore first a experimental semivariogram. At this point we will refer again to *Hengel (2007)* as we will give no introduction to kriging in general.  
+The kriging procedure requires a theoretical semivariogram, which is used to estimate the radii of the LEC at every point of the grid. To compute this theoretical semivariogram, we need to explore first a experimental semivariogram. At this point we will refer again to *Hengel (2007)* as we will give no introduction to kriging in general.  
 Before we can inspect the experimental semivariogram we have to define a lag distance:
 
 ```{r lag distance}
@@ -246,7 +246,7 @@ With the help of the experimental semivariogram, which you can see below, we can
 plot(vertices_vario)
 ```
 
-Doing so, we will need to identify the first plateu of the experimental semivariogram. According to *Zimmermann et al. (2004, 52)* the sill value of the theoretical semivariogram should be fitted to the first plateau of the experimental semivariogram. Additionally, the nugget value should be set to zero.  
+Doing so, we will need to identify the first plateau of the experimental semivariogram. According to *Zimmermann et al. (2004, 52)* the sill value of the theoretical semivariogram should be fitted to the first plateau of the experimental semivariogram. Additionally, the nugget value should be set to zero.  
 In the current example we will identify the first plateau automatically. Of course it is also possible to choose these values by hand.
 
 ```{r plateau}
@@ -315,7 +315,7 @@ LEC_kriged %>% as.data.frame %>%
                       colour = "black", fill= "red", alpha=1/5)
 ```
 
-The second shows the variance of the kriging results, which is a meassure of quality:
+The second shows the variance of the kriging results, which is a measure of quality:
 
 ```{r kriging variance, echo=FALSE}
 LEC_kriged %>% as.data.frame %>%
@@ -351,28 +351,170 @@ isoline_polygons <- LEC_kriged %>%
 sp::proj4string(isoline_polygons) <- sp::CRS("+init=epsg:31467")
 ```
 
-Additionally, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with the middle value of each step, e.g. 1750 instead of 2000 in current example.
+Additionally, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with the middle value of each step, e.g. 1750 instead of 2000 in the current example.
 
 ```{r renaming polygons}
 # Rename the isolines because Grid2Polygon names them with the middle value
 isoline_polygons@data[, 1] <- seq(0, 20000, 500)[2:c(length(isoline_polygons@data[, 1])+1)]
 ```
 
-
-
 ### Calculating the Area and Number of Sites per Isoline
+
+In order to be able to select the ODI, it makes sense to look at the statistical properties of the isolines. These are, for example, the number of archaeological sites within the isolines or their difference in growth per equidistance or the number distinct areas per isoline or the are increase per equidistance. In total, we will calculate eight different statistical properties and we will store them in a `data.frame`:
+
+```{r initializing data.frame}
+# Initialize data.frame
+Isolines_stats <- data.frame(km_isoline = integer(),
+                             number_Area = integer(), 
+                             number_Sites = integer(), 
+                             percent_Sites = integer(),
+                             Area = integer(),
+                             increase_Sites = integer(),
+                             diff_Sites = integer(),
+                             increase_Area = integer(),
+                             diff_Area = integer(),
+                             stringsAsFactors = FALSE)
+```
+
+What now follows is the code to fill the above mentioned `data.frame`. We will start with the number of distinct areas per equidistance:
+
+```{r number areas}
+# Counting the numbers of distinct areas per isoline
+for (i in 1:length(isoline_polygons)) {
+  Isolines_stats[i,2] <- length(isoline_polygons@polygons[[i]]@Polygons) -
+    sum(sapply(isoline_polygons@polygons[[i]]@Polygons,                                                                                 function(x) {sum(isTRUE(x@hole), na.rm = TRUE)}))
+}
+```
+
+Now we will fill the `data.frame` with the name of the equidistances:
+
+```{r equidistances}
+# Insert name of isolines
+Isolines_stats[, 1] <- isoline_polygons@data[, 1]
+```
+
+The next three calculations consider the number of sites within a certain site distance and its percentage as well as the enclosed area:  
+
+```{r number percent area}
+# Calculate number of sites within a certain site distance
+sites_n <- sapply(sp::over(isoline_polygons, sites, returnList = TRUE), nrow)
+Isolines_stats$number_Sites <- cumsum(sites_n)
+
+# Calculate the percentage increase in the nummber of site per isoline
+Isolines_stats$percent_Sites <- (Isolines_stats[, 3] * 100) / length(sites)
+
+# Calculate area enclosed by each isoline
+iso_area <- raster::area(isoline_polygons)/1000000
+Isolines_stats$Area <- cumsum(iso_area)
+```
+
+Based upon the statistical properties above, it is possible to calculate the increase in number of sites and area per equidistance:
+
+```{r increase}
+# calculate increase in numbers of sites per equidistance
+Isolines_stats$increase_Sites <- c(NA, sites_n[-1])
+
+# calculate increase in area of polygon per equidistance
+Isolines_stats$increase_Area <- c(NA, iso_area[-1])
+```
+
+Lastly, we will calculate the difference in increase of sites and area per equidistance:
+
+```{r diff}
+# Calculate difference of increase of number of sites per equidistance
+Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 6]))
+
+# Calculate difference in increase of area per equidistance
+Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 8]))
+```
+
+To make reading of the `data.frame` easier, we will convert the equidistances into kilometers:
+
+```{r kilometer}
+Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000
+```
+
+We can inspect the `data.frame`, although it is difficult to read the important information for the selection of the ODI. Hence it might be a good idea to visualize the information of the `data.frame`.
+
+```{r plot stats, echo=FALSE}
+print.data.frame(Isolines_stats)
+```
+
 
 ### Selecting the "Optimally Describing Isoline"
 
+Following the recommendations of *Zimmermann et al. (2004, 53f.)* and *Zimmermann et al (2009, 9ff.)* we will have a look at three statistical properties: the difference in increase of sites per equidistance, the number of areas with a specif density of sites and the increase of included space. The most important is, however, the increase of included space (*Zimmermann et al. 2009, 9*) . Please note that in the script a visualization of all statistical properties is provided.  
+To begin with, we will plot the difference in increase of sites within per equidistance:
+
+```{r number of sites, echo=FALSE, warning=FALSE}
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = diff_Sites)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Difference of increase of number of sites per equidistance",
+                x = "[km]",
+                y = "Difference") +
+  ggplot2::scale_x_continuous(limit = c(0.5, 20),
+                              breaks = seq(0.5, 20, 0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+```
+
+A maximum difference in increase can be seen from the 2.0 to 2.5 km isoline with `r max(Isolines_stats$diff_Sites, na.rm = TRUE)`.  
+The next statistical property we will have a look at is the number of areas with a specific site density:
+
+```{r number of areas, echo=FALSE, warning=FALSE}
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Area)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Number of areas with a specific site density",
+                x = "Isoline [km]",
+                y = "Number of distinct areas") +
+  ggplot2::scale_x_continuous(limit = c(0.5, 20),
+                              breaks = seq(0.5, 20, 0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+```
+
+As can be seen in the figure a plateau of the number of areas with a specific site density is reached with the 5.0 or 5.5 km isoline.
+Lastly, we will plot the most important statistical parameter: the increase of included space.
+
+```{r area increase, echo=FALSE, warning=FALSE}
+# Increase of area
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = increase_Area)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Increase of area per equidistance",
+                x = "[km]",
+                y = "Area [km²]") +
+  ggplot2::scale_x_continuous(limit = c(0.5, 20),
+                              breaks = seq(0.5, 20, 0.5)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+```
+
+The figure shows a maximum of included space at the 4.0 km isoline. According to *Zimmermann et al. 2009, 9ff.* this isoline **would be selected as ODI**. For a theoretical background we refer to the mentioned publications.  
+We would like to note that the ODI **should not be selected** automatically based upon a maximum value of included space. This is because several archaeological cultures have shown two maxima which need an archaeological interpretation. Further more in some cases it was not possible to observe a maximum and instead with increasing distance between sites a continuous increase of space is to be observed. This would indicate a data set with poor archaeological knowledge (*cf. Zimmermann et al. 2009, 10*).  
+
 ## Data Export
+
+The last thing to do is the data export.  
+Our script offers to export the isolines as polygons, the raster images of the kriging result and variance and a table with the statistical properties of the isolines. This code is not shown here, but you can find it at the end of the `01_krige.R` and `02_ODI_selection.R` file.
+
 
 ## Bibliography
 
-Hengel, T., **2007**. A Practical Guide to Geostatistical Mapping of Environmental Variables. (Uxembourg 2007).
+Hengel, T., **2007**. A Practical Guide to Geostatistical Mapping of Environmental Variables. (Luxembourg 2007).
 
 Preuss, J. (ed.), **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
 
-Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. _Philosophical Transactions B_.
+Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. *Philosophical Transactions B*.
 
 Zimmermann, A., Richter, J., Frank, T., Wendt, K.P., **2004**. Landschaftsarchäologie II. Überlegungen zu Prinzipien einer Landschaftsarchäologie. *Bericht der Römisch-Germanischen Kommission 85, 2004, 37-96*.
 
+Zimmermann, A., Wendt, K.P., Frank, T., Hilpert, J., **2009**. Landscape Archaeology in Central Europe. *Proceedings of the Prehistoric Society 75, 2009, 1-53*.
