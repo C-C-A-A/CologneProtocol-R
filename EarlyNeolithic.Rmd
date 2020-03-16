@@ -1,7 +1,7 @@
 ---
 title: "Example application of the Cologne Protocol for the Early Neolithic of central Europe"
 author: "M. Broich & R. Peters"
-date: "11 March 2020"
+date: "16 March 2020"
 output: html_document
 ---
 
@@ -22,7 +22,7 @@ This manual presents an example application of the **Cologne Protocol** publishe
 
 The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
 
-The goal of the script is to carry out all steps of the first part of the Cologne Protocol in R. These are (cf. *Schmidt et al. accepted, table S2*):
+The goal of the script is to carry out all steps of the first part two parts of the Cologne Protocol in R. These are (cf. *Schmidt et al. accepted, table S2*):
 
 1. **Calculating "Largest Empty Circle"**
 
