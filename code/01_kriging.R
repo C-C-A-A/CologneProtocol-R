@@ -57,7 +57,7 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
                            maxdist = bbox_diag/2,
                            debug.level = -1)
 
-# Create isolines ------------------------------------------------------------
+# Create isolines --------------------------------------------------------------
 isoline_polygons <- LEC_kriged %>%
   {raster::rasterFromXYZ(data.frame(x = sp::coordinates(.)[, 1],
                                   y = sp::coordinates(.)[, 2],
@@ -71,3 +71,18 @@ sp::proj4string(isoline_polygons) <- sp::CRS(your_projection)
 
 # Rename the isolines because Grid2Polygon names them with the middle value
 isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@data[, 1])+1)]
+
+
+# Merge polygons ---------------------------------------------------------------
+
+isoline_merged <- isoline_polygons[isoline_polygons@data[, 1] == 500, ]
+
+for (i in seq(500, 29500, 500)) {
+  
+  isoline_polygons[isoline_polygons@data[, 1] == i, ] <- i + 500
+  
+  isoline_polygons <- raster::aggregate(isoline_polygons, by = "z")
+  
+  isoline_merged <- rbind(isoline_merged, isoline_polygons[isoline_polygons@data[, 1] == i + 500, ])
+
+}
