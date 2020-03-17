@@ -66,6 +66,11 @@ LEC_kriged %>% as.data.frame %>%
                       ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
                       colour = "white", fill= "black", alpha=1/2)
 
+
+# Change units of all data.frames ----------------------------------------------
+Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000 # for easy reading
+
+
 # Plot of descriptive properties of isolines -----------------------------------
 
 # Number of distinct areas per isoline
