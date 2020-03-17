@@ -188,3 +188,53 @@ Isolines_stats %>%
   ggplot2::theme_bw() +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
+
+# Save data --------------------------------------------------------------------
+
+# Isoline_stats
+write.table(Isolines_stats,
+            "output/Isolines_stats.csv",
+            sep = ";",
+            dec = ",")
+
+# Polygons of Isolines and raster of Kriging
+if(export_raster == TRUE){
+  
+  # Polygons of isolines as shape file
+  rgdal::writeOGR(isoline_polygons,
+                  dsn = "output",
+                  layer = "isoline_polygons",
+                  driver = "ESRI Shapefile",
+                  check_exists = TRUE,
+                  overwrite_layer = TRUE)
+  
+  # Rewrite .prj-File with WKT
+  rgdal::showWKT(your_projection, file="output/isoline_polygons.prj")
+  
+  
+  # Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
+  
+  # Kriging-Results
+  r <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
+                                        y = sp::coordinates(LEC_kriged)[,2],
+                                        z = LEC_kriged$var1.pred),
+                             crs = sp::CRS(your_projection))
+  
+  
+  
+  raster::writeRaster(r, "output/Kriging_raster.tif", format="GTiff", overwrite=T)
+  raster::writeRaster(r, "output/Kriging_raster.grd",format="raster", overwrite=T)
+  
+  
+  # Variance (Quality Measure)
+  v <- raster::rasterFromXYZ(data.frame(x = sp::coordinates(LEC_kriged)[,1],
+                                        y = sp::coordinates(LEC_kriged)[,2],
+                                        z = LEC_kriged$var1.var),
+                             crs = sp::CRS(your_projection))
+  
+  
+  
+  raster::writeRaster(v, "output/Variance_raster.tif", format="GTiff", overwrite=T, prj=T)
+  raster::writeRaster(v, "output/Variance_raster.grd",format="raster", overwrite=T, prj=T)
+  
+}
