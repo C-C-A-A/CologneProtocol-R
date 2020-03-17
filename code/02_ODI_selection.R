@@ -58,6 +58,11 @@ Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 6]))
 Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 8]))
 
 
+# Add Isolines_stats to isoline_polygons ---------------------------------------
+
+isoline_polygons@data <- Isolines_stats
+
+
 # Change units of all data.frames ----------------------------------------------
 Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000
 
