@@ -211,6 +211,16 @@ if(export_raster == TRUE){
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/isoline_polygons.prj")
   
+  # Merged Polygons of isolines as shape file
+  rgdal::writeOGR(isoline_merged,
+                  dsn = "output",
+                  layer = "isoline_merged",
+                  driver = "ESRI Shapefile",
+                  check_exists = TRUE,
+                  overwrite_layer = TRUE)
+  
+  # Rewrite .prj-File with WKT
+  rgdal::showWKT(your_projection, file="output/isoline_merged.prj")
   
   # Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
   
