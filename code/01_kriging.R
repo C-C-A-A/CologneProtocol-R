@@ -89,9 +89,6 @@ isoline_polygons_copy <- isoline_polygons
 # New SPDF with only areas of the lowest site density
 isoline_merged <- isoline_polygons_copy[isoline_polygons_copy@data[, 1] == 500, ]
 
-# Make copy of isoline_polygons first
-  isoline_polygons_copy <- isoline_polygons
-
 # The following loop merges the polygons.
 for (i in seq(500, 29500, 500)) {
   
