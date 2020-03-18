@@ -84,16 +84,19 @@ isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@dat
 # New SPDF with only areas of the lowest site density
 isoline_merged <- isoline_polygons[isoline_polygons@data[, 1] == 500, ]
 
+# Make copy of isoline_polygons first
+  isoline_polygons_copy <- isoline_polygons
+
 # The following loop merges the polygons.
 for (i in seq(500, 29500, 500)) {
   
   # change the value of site density of a polygon to one higher equidistance
-  isoline_polygons[isoline_polygons@data[, 1] == i, ] <- i + 500
+  isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i, ] <- i + 500
   
   # aggregate these polygons
-  isoline_polygons <- raster::aggregate(isoline_polygons, by = "z")
+  isoline_polygons_copy <- raster::aggregate(isoline_polygons_copy, by = "z")
   
   # merge new SPDF with aggregated polygons
-  isoline_merged <- rbind(isoline_merged, isoline_polygons[isoline_polygons@data[, 1] == i + 500, ])
+  isoline_merged <- rbind(isoline_merged, isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + 500, ])
 
-}
+  }
