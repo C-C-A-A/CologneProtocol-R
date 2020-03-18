@@ -107,7 +107,7 @@ voronoi_vertices <- deldir::deldir(sites@coords[, 1],
 
 ```
 
-After the extraction of the vertices from the Voronoi polygons, they have to be prepared to enable a transformation into an spdf (SpatialPointsDataFrame):
+After extracting the vertices from the Voronoi polygons, they have to be prepared to enable a transformation into an `SpatialPointsDataFrame` (spdf):
 
 ```{r vertices preparation}
 # rearrange voronoi_vertices in preparation for transformation into an spdf
@@ -130,12 +130,12 @@ sp::proj4string(vertices_spdf) <- sp::CRS("+init=epsg:31467")
 
 ### Aggregation of vertices
 
-During the step of extracting the vertices we did not care about that some of them were duplicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artificial site distances and it must be decided in individual cases if the border points should be deleted or not.  
+During the step of extracting the vertices we didn't take care of the duplicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artificial site distances and it must be decided on a case-by-case basis wether the border points should be deleted or not.  
 In the present example application we have to remove the duplicates but we will keep the border points.
 
 ```{r vertices aggregation}
 
-remove_border_points <- FALSE # Normally, this variable is defined in 00_LEC.R
+remove_border_points <- FALSE # Normally, this variable is defined in the header of 00_LEC.R
 
 # If Condition wether border points are removed or not
 if(remove_border_points == TRUE){
@@ -197,11 +197,11 @@ legend(x = 2800000, y = 5000000,
 
 ## Kriging
 
-The next part of this document will describe the used Kriging procedure to estimate site distances on a regular spaced grid within the working area. These estimated site distances form the basis of the creation of isolines.
+The next part of this document will describe the used Kriging interpolation to estimate site distances on a regular spaced grid within the working area. These estimated site distances are a prerequisite  fot the creation of isolines.
 
 ### Preparation and Grid
 
-For kriging we need a grid of evenly distributed points. The algorithm will estimate the site distance (radius LEC) at every point of the grid, based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)* including kriging in R.  
+For kriging we need a grid of evenly distributed points. The interpolation algorithm will estimate the site distance (radius LEC) at every point of the grid, based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)* including kriging in R.  
 The grid spacing to be selected depends on various factors. The size of the working area or the regular distances between the archaeological sites are an important factor. In addition, the selected grid spacing will significantly influence the computing time required, because a shorter grid distance will create more points.  
 For the current example we will create a grid with a spacing of 1000 m between each point. This is a comparable large spacing but the working area is spanning most of Central Europe, which is a quite large area.
 
@@ -221,7 +221,7 @@ The generated grid consists of `r length(grid@coords[, 1])` points, at which the
 ### Semivariogram
 
 The kriging procedure requires a theoretical semivariogram, which is used to estimate the radii of the LEC at every point of the grid. To compute this theoretical semivariogram, we need to explore first a experimental semivariogram. At this point we will refer again to *Hengel (2007)* as we will give no introduction to kriging in general.  
-Before we can inspect the experimental semivariogram we have to define a lag distance:
+Before we can inspect the experimental semivariogram we have to define a lag distance. We devide the bounding box diagonal by 250, the default lag distance used in the Cologne Protocol:
 
 ```{r lag distance}
 # Define Bounding Box Diagonal
@@ -246,8 +246,8 @@ With the help of the experimental semivariogram, which you can see below, we can
 plot(vertices_vario)
 ```
 
-Doing so, we will need to identify the first plateau of the experimental semivariogram. According to *Zimmermann et al. (2004, 52)* the sill value of the theoretical semivariogram should be fitted to the first plateau of the experimental semivariogram. Additionally, the nugget value should be set to zero.  
-In the current example we will identify the first plateau automatically. Of course it is also possible to choose these values by hand.
+Doing so, we will need to identify the first plateau of the experimental semivariogram. According to *Zimmermann et al. (2004, 52)* the sill and range value of the theoretical semivariogram should be fitted to the first plateau of the experimental semivariogram. Additionally, the nugget value should be set to zero.  
+In the current example we will identify the first plateau automatically. Of course it is also possible to choose these values by hand. And a decision has to be made on a case-by-case basis.
 
 ```{r plateau}
 # Identify first plateau for fitting theoretical variogram  
@@ -259,7 +259,7 @@ range.plateau <- vertices_vario %$%
 sill.plateau <- vertices_vario$gamma[vertices_vario$dist == range.plateau]
 ```
 
-Lastly, we have to choose a model for the fitting of the theoretical semivariogram. The function `gstat::show.vgm()` will show you all available models. We, however, recommend to use the exponential "Exp" or spherical "Sph" model.  
+Finally, we have to choose a model for the fitting of the theoretical semivariogram. The function `gstat::show.vgm()` will show you all available models. We, however, recommend to use the exponential "Exp" or spherical "Sph" model.  
 In the current example we will use a spherical Model:
 
 ```{r fitting vario}
@@ -315,7 +315,7 @@ LEC_kriged %>% as.data.frame %>%
                       colour = "black", fill= "red", alpha=1/5)
 ```
 
-The second shows the variance of the kriging results, which is a measure of quality:
+The second one shows the variance of the kriging results, which is quality measure:
 
 ```{r kriging variance, echo=FALSE}
 LEC_kriged %>% as.data.frame %>%
@@ -331,12 +331,12 @@ LEC_kriged %>% as.data.frame %>%
 
 ## Optimally Describing Isolines
 
-On the basis of the kriging results we will create isolines and we will select an "Optimally Describing Isoline" (ODI) out of these. The selection of the ODI is based upon several statistical parameters of the isolines.
+On the basis of the kriging results we will create isolines and we will select an "Optimally Describing Isoline" (ODI) out of these. The selection of the ODI is based upon several statistical parameters of the isolines (*Zimmermann et al. (2004, 53-55)*).
 
 ### Creating Contour Lines (Isolines)
 
-In order to create isolines we need to transform the output of the `gstat::krige()` function, which is a raster, into `SpatialPolygonsDataFrame`. These have the advantage that statistics like the number of archaeological sites in an isoline can easily be calculated. One disadvantage is, that this transformation does take time.  
-A fast way of this working step is to transform the raster first into a `SpatialGridDataFrame` and afterwards to use the function `inlmisc::Grid2Polygons()`:
+In order to create isolines we need to transform the output of the `gstat::krige()` function, which is a raster, into `SpatialPolygonsDataFrame`. This has the advantage that statistics, like the number of archaeological sites in an isoline, can easily be calculated. One disadvantage is, that this transformation does take time.  
+To speed up this working step we transform the raster first into a `SpatialGridDataFrame` and afterwards  use the function `inlmisc::Grid2Polygons()`:
 
 ```{r creating polygons}
 isoline_polygons <- LEC_kriged %>%
@@ -351,7 +351,8 @@ isoline_polygons <- LEC_kriged %>%
 sp::proj4string(isoline_polygons) <- sp::CRS("+init=epsg:31467")
 ```
 
-Additionally, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with the middle value of each step, e.g. 1750 instead of 2000 in the current example.
+In our sample application isolines will be created starting at 0,5 km and up to 20 km with an equidistance of 0,5 km.
+When finished, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with the mean value of each step, e.g. the isoline between 1500 m and 2000 m is named "1750" instead of "2000" in the current example.
 
 ```{r renaming polygons}
 # Rename the isolines because Grid2Polygon names them with the middle value
@@ -360,7 +361,7 @@ isoline_polygons@data[, 1] <- seq(0, 20000, 500)[2:c(length(isoline_polygons@dat
 
 ### Calculating the Area and Number of Sites per Isoline
 
-In order to be able to select the ODI, it makes sense to look at the statistical properties of the isolines. These are, for example, the number of archaeological sites within the isolines or their difference in growth per equidistance or the number distinct areas per isoline or the are increase per equidistance. In total, we will calculate eight different statistical properties and we will store them in a `data.frame`:
+In order to be able to select the ODI, it makes sense to look at the statistical properties of the isolines. These are, for example, the number of archaeological sites within the isolines, their difference in growth per equidistance, the number of distinct areas per isoline or the are increase per equidistance. In total, we will calculate eight different statistical properties and we will store them in a `data.frame`:
 
 ```{r initializing data.frame}
 # Initialize data.frame
@@ -462,7 +463,7 @@ Isolines_stats %>%
 ```
 
 A maximum difference in increase can be seen from the 2.0 to 2.5 km isoline with `r max(Isolines_stats$diff_Sites, na.rm = TRUE)`.  
-The next statistical property we will have a look at is the number of areas with a specific site density:
+Nextwe will have a look at the number of areas with a specific site density:
 
 ```{r number of areas, echo=FALSE, warning=FALSE}
 Isolines_stats %>%
@@ -479,7 +480,7 @@ Isolines_stats %>%
                  axis.text.x = ggplot2::element_text(angle = 90))
 ```
 
-As can be seen in the figure a plateau of the number of areas with a specific site density is reached with the 5.0 or 5.5 km isoline.
+As can be seen in the figure the number of areas with a specific site density reach a plateau at the 5.0 or 5.5 km isoline.
 Lastly, we will plot the most important statistical parameter: the increase of included space.
 
 ```{r area increase, echo=FALSE, warning=FALSE}
@@ -499,17 +500,19 @@ Isolines_stats %>%
 ```
 
 The figure shows a maximum of included space at the 4.0 km isoline. According to *Zimmermann et al. 2009, 9ff.* this isoline **would be selected as ODI**. For a theoretical background we refer to the mentioned publications.  
-We would like to note that the ODI **should not be selected** automatically based upon a maximum value of included space. This is because several archaeological cultures have shown two maxima which need an archaeological interpretation. Further more in some cases it was not possible to observe a maximum and instead with increasing distance between sites a continuous increase of space is to be observed. This would indicate a data set with poor archaeological knowledge (*cf. Zimmermann et al. 2009, 10*).  
+We would like to note that the ODI **should not be selected** automatically based upon a maximum value of included space. For example several archaeological cultures have shown two maxima which need an archaeological interpretation (e.g. patterns of fission and fusion in hunter/gatherer societies (*cf. Kretschmer et al. 2016*)). Further more in some cases it is not possible to observe a maximum and instead with increasing distance between sites a continuous increase of space is to be observed. This would indicate a data set indicating a poor archaeological record (*cf. Zimmermann et al. 2009, 10*).  
 
 ## Data Export
 
 The last thing to do is the data export.  
-Our script offers to export the isolines as polygons, the raster images of the kriging result and variance and a table with the statistical properties of the isolines. This code is not shown here, but you can find it at the end of the `01_krige.R` and `02_ODI_selection.R` file.
+Our script offers to export the isolines as polygons (.shp), the raster images of the kriging result and variance (.grd, GeoTiff) and a table with the statistical properties of the isolines. This code is not shown here, but you can find it at the end of the `01_krige.R` and `02_ODI_selection.R` file.
 
 
 ## Bibliography
 
 Hengel, T., **2007**. A Practical Guide to Geostatistical Mapping of Environmental Variables. (Luxembourg 2007).
+
+Kretschmer, I., Maier, A., Schmidt, I., **2016**. Probleme und mögliche Lösungen bei der Schätzung von Bevölkerungsdichten im Paläolithikum. In: Ker, T., K. Nowak, G. Roth (Eds.), Alles was zählt. Feschrift für Andreas Zimmermann.
 
 Preuss, J. (ed.), **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
 
