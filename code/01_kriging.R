@@ -75,6 +75,8 @@ isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@dat
 
 # Merge polygons ---------------------------------------------------------------
 
+# THIS IS EXPERIMENTAL
+
 # Please note: the running time of the following code may be very long
 # Create new SpatialPolygonsDataFrame with merged Polygons in order to reduce
 # errors when calculating the number of areas with a specific site density.
