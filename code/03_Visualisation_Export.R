@@ -86,6 +86,22 @@ Isolines_stats %>%
   ggplot2::theme_bw() +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
+
+# EXPERIMENTAL:
+# Number of distinct areas per isoline MERGED
+Isolines_stats %>%
+  ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Area_merged)) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point() +
+  ggplot2::labs(title = "Number of areas with a specific site density MERGED",
+                x = "Isoline [km]",
+                y = "Number of distinct areas") +
+  ggplot2::scale_x_continuous(limit = your_limit,
+                              breaks = your_breaks) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                 axis.text.x = ggplot2::element_text(angle = 90))
+
   
 # Number of sites per isoline
 Isolines_stats %>%
