@@ -57,7 +57,7 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
                            maxdist = bbox_diag/2,
                            debug.level = -1)
 
-# Create isolines ------------------------------------------------------------
+# Create isolines --------------------------------------------------------------
 isoline_polygons <- LEC_kriged %>%
   {raster::rasterFromXYZ(data.frame(x = sp::coordinates(.)[, 1],
                                   y = sp::coordinates(.)[, 2],
@@ -71,3 +71,29 @@ sp::proj4string(isoline_polygons) <- sp::CRS(your_projection)
 
 # Rename the isolines because Grid2Polygon names them with the middle value
 isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@data[, 1])+1)]
+
+
+# Merge polygons ---------------------------------------------------------------
+
+# Please note: the running time of the following code may be very long
+# Create new SpatialPolygonsDataFrame with merged Polygons in order to reduce
+# errors when calculating the number of areas with a specific site density.
+
+# Until now the values of the following code need to be adjsuted by hand
+
+# New SPDF with only areas of the lowest site density
+isoline_merged <- isoline_polygons[isoline_polygons@data[, 1] == 500, ]
+
+# The following loop merges the polygons.
+for (i in seq(500, 29500, 500)) {
+  
+  # change the value of site density of a polygon to one higher equidistance
+  isoline_polygons[isoline_polygons@data[, 1] == i, ] <- i + 500
+  
+  # aggregate these polygons
+  isoline_polygons <- raster::aggregate(isoline_polygons, by = "z")
+  
+  # merge new SPDF with aggregated polygons
+  isoline_merged <- rbind(isoline_merged, isoline_polygons[isoline_polygons@data[, 1] == i + 500, ])
+
+}
