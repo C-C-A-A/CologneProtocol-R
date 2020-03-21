@@ -15,9 +15,9 @@ options(scipen = 999)
 
 # variables used for loading and creating data 
 your_projection <- "+init=epsg:31467" # the projection of your data
-your_grid_spacing <- 500 # choose some value [m] between 200 and 1000 
-your_isoline_steps <- seq(0, 10000, 500) # min, max, step (equidistance)
-remove_border_points <- TRUE # Boolean (TRUE/FALSE), wether border points are removed or not
+your_grid_spacing <- 1000 # choose some value [m] between 200 and 1000 
+your_isoline_steps <- seq(0, 30000, 500) # min, max, step (equidistance)
+remove_border_points <- FALSE # Boolean (TRUE/FALSE), wether border points are removed or not
 export_raster <- TRUE # Boolean (TRUE/FALSE), wether kriging and variance raster are exported
 
 # variables used for kriging
@@ -91,3 +91,43 @@ vertices_spdf@data$radiusLEC <- rgeos::gDistance(sites,
                                                  byid = TRUE) %>%
   apply(1, min)
 
+
+# Extraction of Voronoi tiles --------------------------------------------------
+
+# THIS IS EXPERIMENTAL
+# The goal of this code is to convert the voronoi tiles of deldir into
+# SpatialPolygonsDataFrame for export and use in a GIS
+
+
+# Define function to duplicate the top row of a data.frame and bind it as last entry
+# This structure is needed to create Polygons
+df.bind <- function(x) {
+  rbind(x, x[1, ])
+}
+
+# creating a list of all tiles 
+voronoi_list <- deldir::deldir(sites@coords[, 1],
+                             sites@coords[, 2]) %>%
+  deldir::tile.list() %>%
+  lapply('[', c("x", "y")) %>%
+  lapply(as.data.frame) %>%
+  lapply(df.bind) %>%
+  lapply(as.matrix) %>%
+  lapply(sp::Polygon, hole = FALSE)
+
+# crate a vector of "names" for the attribute ID, which is needed in sp::Polygons
+# This part may be improved by taking meaningful IDs
+names_ID <- as.character(c(1:length(voronoi_list)))
+
+# Covert Polygon class into Polygons class
+# This code was provided by user Ben from stackexchange:
+# https://gis.stackexchange.com/questions/171124/data-frame-to-spatialpolygonsdataframe-with-multiple-polygons
+voronoi_tiles <- lapply(seq_along(voronoi_list), function(i) sp::Polygons(list(voronoi_list[[i]]),
+                                                                 ID = names_ID[i]))
+
+# Convert Polygons class into SpatialPolygons
+voronoi_tiles <- sp::SpatialPolygons(voronoi_tiles, proj4string = sp::CRS(your_projection))
+
+# Coerce to SpatialPolygonsDataFrame. This is needed for output via writeOGR
+# Note: The Data has no meaning
+voronoi_tiles <- as(voronoi_tiles, "SpatialPolygonsDataFrame")
