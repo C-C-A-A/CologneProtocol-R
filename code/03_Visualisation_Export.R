@@ -234,9 +234,29 @@ if(export_raster == TRUE){
                   driver = "ESRI Shapefile",
                   check_exists = TRUE,
                   overwrite_layer = TRUE)
-  
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/isoline_merged.prj")
+  
+  # Polygons of isolines as shape file
+  rgdal::writeOGR(voronoi_tiles,
+                  dsn = "output",
+                  layer = "voronoi_tiles",
+                  driver = "ESRI Shapefile",
+                  check_exists = TRUE,
+                  overwrite_layer = TRUE)
+  # Rewrite .prj-File with WKT
+  rgdal::showWKT(your_projection, file="output/voronoi_tiles.prj")
+  
+  # Polygons of isolines as shape file
+  rgdal::writeOGR(sites,
+                  dsn = "output",
+                  layer = "sites",
+                  driver = "ESRI Shapefile",
+                  check_exists = TRUE,
+                  overwrite_layer = TRUE)
+  
+  # Rewrite .prj-File with WKT
+  rgdal::showWKT(your_projection, file="output/sites.prj")
   
   # Write raster files as GeoTiff and grd-File for use in GIS-Programms like QGIS
   
