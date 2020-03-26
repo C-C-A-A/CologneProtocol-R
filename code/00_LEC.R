@@ -35,6 +35,7 @@ your_breaks <- seq(1, 20, 1) # sets the tick marks on x-axis
 
 # Sample data of Early Neolithic sites from Preuss 1998
 # Data is available from the CRC 806 database
+# The accuracy of the localization of the sites is 2.5 km (Zimmermann et al. 2004, 55)
 url_link <- "http://sfb806srv.uni-koeln.de/owsproxy.php?service=WFS&version=1.0.0&request=GetFeature&typeNames=geonode%3A_13_earlyneolithic_ce_sites_wgs84&outputFormat=csv"
 
 # load date as a data.frame
