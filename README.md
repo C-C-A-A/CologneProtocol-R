@@ -30,9 +30,16 @@ The **Cologne Protocol** is a geostatistical approach for estimating prehistoric
 This repository contains a manual on how to model Core Areas with R. More specifically, the technical implementation of the first two parts of the **Cologne Protocol** is explained. The first part is a GIS-analysis of site distrbutions and the second part deals with the identification of so-called Core Areas. These two parts can be devided further into several working steps, including the construction of voronoi diagrams and "Largest Empty Circles", kriging, converting the kriging results into isolines and finally calculating the needed criteria to select the Optimally Describing Isoline.
 The aim of this repository is neither to explain the further steps of the **Cologne Protocol** nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
 
+### How to use
+
+If you already know the **Cologne Protocol** and if you are familiar with `R`, we recommend starting with the `.R` files in the `code\` directory. Change the variables in the first part of file `00_LEC.R` according to your research needs and run all code successively.  
+If you know a bit of the **Cologne Protocol** and programming with `R`, we recommend starting with the `EarlyNeolithic.Rmd` file.
+If you don't know the **Cologne Protocol**, we recommend to read the above mentioned publication first.
+
+
 ### Licence:
 
-Code: MIT (http://opensource.org/licenses/MIT) year: 2020, copyright holders: Manuel Broich and Robin Peters)
+Code: MIT (http://opensource.org/licenses/MIT) year: 2020, copyright holders: Manuel Broich and Robin Peters
 
 ### Dependencies:
 
