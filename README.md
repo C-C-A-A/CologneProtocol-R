@@ -36,6 +36,12 @@ If you already know the **Cologne Protocol** and if you are familiar with `R`, w
 If you know a bit of the **Cologne Protocol** and programming with `R`, we recommend starting with the `EarlyNeolithic.Rmd` file.
 If you don't know the **Cologne Protocol**, we recommend to read the above mentioned publication first.
 
+### Other resources
+
+There exsist other manuals and recourses to fulfill the first two parts of the **Cologne Protocol**. The above mentiond publications is not only accopanied by an `R` manual but also by manuals for `QGIS`, `MapInfo` and `ArcGIS`. Please see the publication for more information.  
+
+Additionally, we know two other implementations in `R`: one package called [lecAAR](https://github.com/ISAAKiel/lecAAR) by the Initiative for Statistical Analysis in Archaeology Kiel (ISAAK) and one [script](https://uni-tuebingen.de/en/research/core-research/collaborative-research-centers/sfb-1070/organisation/service-project-s/technical-notes/technical-note-1.html) by Ahlrichs, J., Henkner, J. and Schmidt, K.
+This manual and these two implementations overlap partly because of the use of the same packages, but we think that the present manual provides for the first time a complete coverage of the first two parts of the **Cologne Protocol**.
 
 ### Licence:
 
