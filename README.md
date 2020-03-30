@@ -2,9 +2,7 @@
 
 ### Compendium DOI:
 
-_How should we handle this? Zenodo? Like this?:_
-
-**this is the DOI created from figshare**
+**The DOI will be created by figshare upon final publication**
 
 The files at the URL above are linked to the publication and represent the version of the manual at that time. The files of this repository are the developement versions and may have changed since the paper was pulished.
 
