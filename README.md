@@ -2,9 +2,9 @@
 
 ### Compendium DOI:
 
-**The DOI will be created by figshare upon final publication**
+**DOI will be created by figshare upon final publication**
 
-The files at the URL above are linked to the publication and represent the version of the manual at that time. The files of this repository are the developement versions and may have changed since the paper was pulished.
+The file at the URL above is linked to the publication and represents the version of the manual at that time. The files of this repository are the developement versions and may have changed since the paper was pulished.
 
 ### Authors of this repository:
 
@@ -22,7 +22,7 @@ Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S.
 
 - The `code\` directory contains the script of the **Cologne Protocol**, which is organized in four `.R` files
 
-- The `output\` directory contains`raster`, `shape` and `csv` files. These files contain the kriging results, the isolines and their statisical properties
+- The `output\` directory contains `raster`, `shape` and `csv` files. These files contain the kriging results, the isolines and their statisical properties
 
 ### Overview:
 
