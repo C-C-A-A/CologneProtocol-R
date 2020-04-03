@@ -1,8 +1,9 @@
 ---
-title: "Example application of the Cologne Protocol for the Early Neolithic of central Europe"
+title: Example application of the Cologne Protocol for the Early Neolithic of central Europe using R
 author: "M. Broich & R. Peters"
 date: "03 April 2020"
-output: html_document
+output:
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -24,19 +25,19 @@ The manual describes the first two parts of the Cologne Protocol, which are a GI
 
 The goal of the script is to carry out all steps of the first two parts of the Cologne Protocol in R. These are (cf. *Schmidt et al. 2020, table S2*):
 
-**Tasks:**
-1. loading data (Shape-layer with sites as points)
-2. Creating of Voronoi Diagram
-3. Extraction of Vertices
-4. Aggregation of Verticies
-5. Defining the Radius of the "Largest Empty Circle"
-6. Kriging - Preparation and Grid
-7. Kriging - Semivariogram
-8. Kriging - inspect and export raster output
-9. Creating Contour Lines (Isolines)
-10. Calculating the Area and Number of Sites per isoline
-11. Data export
-12. Selecting the "Optimally Describing Isoline"
+**Tasks:**  
+1. loading data (Shape-layer with sites as points)  
+2. Creating of Voronoi Diagram  
+3. Extraction of Vertices  
+4. Aggregation of Verticies  
+5. Defining the Radius of the "Largest Empty Circle"  
+6. Kriging - Preparation and Grid  
+7. Kriging - Semivariogram  
+8. Kriging - inspect and export raster output  
+9. Creating Contour Lines (Isolines)  
+10. Calculating the Area and Number of Sites per isoline  
+11. Data export  
+12. Selecting the "Optimally Describing Isoline"  
 
 ## Dependencies
 
