@@ -1,7 +1,7 @@
 ---
 title: "Example application of the Cologne Protocol for the Early Neolithic of central Europe"
 author: "M. Broich & R. Peters"
-date: "16 March 2020"
+date: "03 April 2020"
 output: html_document
 ---
 
@@ -18,39 +18,29 @@ options(scipen = 999)
 
 ## Introduction
 
-This manual presents an example application of the **Cologne Protocol** published in *Schmidt et al. (accepted)*. It is based upon the `.R` files which are in the `code\` directory. If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. However, the code chunks shown in this manual originate from the mentioned `.R` files.
+This manual presents an example application of the **Cologne Protocol**. It is based upon the `.R` files which are in the `code\` directory of the GitHub repository [CologneProtocol](https://github.com/Mono2/CologneProtocol). If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. However, the code chunks shown in this manual originate from the mentioned `.R` files. Though it might be possible that the files of the GitHub repository have been changed, due to the improving of the script.
 
 The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
 
-The goal of the script is to carry out all steps of the first part two parts of the Cologne Protocol in R. These are (cf. *Schmidt et al. accepted, table S2*):
+The goal of the script is to carry out all steps of the first two parts of the Cologne Protocol in R. These are (cf. *Schmidt et al. 2020, table S2*):
 
-1. **Calculating "Largest Empty Circle"**
-
-    i) Creating of Voronoi Polygons
-    ii) Extraction of Vertices
-    iii) Aggregation of Verticies
-    iv) Defining the Radius of the "Largest Empty Circle"
-
-2. **Kriging**
-
-    i) Preparation and Grid
-    ii) Semivariogram
-    iii) Kriging
-    iv) Kriging Results
-
-3. **Optimally Describing Isolines**
-
-    i) Creating Contour Lines (Isolines)
-    ii) Calculating the Area and Number of Sites per Ssoline
-    iii) Selecting the "Optimally Describing Isoline"
-
-4. **Data export**
-
+1. loading data (Shape-layer with sites as points)
+2. Creating of Voronoi Diagram
+3. Extraction of Vertices
+4. Aggregation of Verticies
+5. Defining the Radius of the "Largest Empty Circle"
+6. Kriging - Preparation and Grid
+7. Kriging - Semivariogram
+8. Kriging - inspect and export raster output
+9. Creating Contour Lines (Isolines)
+10. Calculating the Area and Number of Sites per isoline
+11. Data export
+12. Selecting the "Optimally Describing Isoline"
 
 ## Dependencies
 
 To run the code of the script several packages are needed. These dependencies are stored in the `deps.yaml` file. It is possible to load them manually or to use `automagic::install_deps_file()` function. If the package `automagic` is not installed, it is possible to install it with `install.packages("automagic")`.  
-Furthermore the script was developed under R version 3.6.3.
+Furthermore, the script was developed under R version 3.6.3.
 
 
 ## Sample Data
@@ -516,7 +506,7 @@ Kretschmer, I., Maier, A., Schmidt, I., **2016**. Probleme und mögliche Lösung
 
 Preuss, J. (ed.), **1998**. Das Neolithikum in Mitteleuropa: Kulturen, Wirtschaft, Umwelt vom 6. bis 3. Jahrtausend v. u. Z., Übersichten zum Stand der Forschung (Weissbach 1998).
 
-Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **accepted**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. *Philosophical Transactions B*.
+Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S., Vogels, O., Wendt, K. P., Zimmermann, A., Maier, A., **2020**. Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts. *Philosophical Transactions B*.
 
 Zimmermann, A., Richter, J., Frank, T., Wendt, K.P., **2004**. Landschaftsarchäologie II. Überlegungen zu Prinzipien einer Landschaftsarchäologie. *Bericht der Römisch-Germanischen Kommission 85, 2004, 37-96*.
 
