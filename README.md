@@ -22,7 +22,7 @@ Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S.
 
 - The `code\` directory contains the script of the **Cologne Protocol**, which is organized in four `.R` files
 
-- The `output\` directory contains `raster`, `shape` and `csv` files. These files contain the kriging results, the isolines and their statistical properties
+- The `output\` directory contains a `csv` file with the statistical properties of the isolines of the sample data (Early Neolithic). The export of `shape` and `raster` files is included in `03_Visualisation_Export.R`. Due to their size they are not stored in this repository. 
 
 ### Overview:
 
