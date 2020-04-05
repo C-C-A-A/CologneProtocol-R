@@ -1,10 +1,10 @@
-## Research compedium for "Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts"
+## Research compendium for "Approaching Prehistoric Demography: Proxies, Scales and Scope of the Cologne Protocol in European contexts"
 
 ### Compendium DOI:
 
 **DOI will be created by figshare upon final publication**
 
-The file at the URL above is linked to the publication and represents the version of the manual at that time. The files of this repository are the developement versions and may have changed since the paper was pulished.
+The file linked above is connected to the publication and represents the version of the manual at that time. The files of this repository are the development versions and may have changed since the paper was published.
 
 ### Authors of this repository:
 
@@ -22,26 +22,26 @@ Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S.
 
 - The `code\` directory contains the script of the **Cologne Protocol**, which is organized in four `.R` files
 
-- The `output\` directory contains `raster`, `shape` and `csv` files. These files contain the kriging results, the isolines and their statisical properties
+- The `output\` directory contains `raster`, `shape` and `csv` files. These files contain the kriging results, the isolines and their statistical properties
 
 ### Overview:
 
 The **Cologne Protocol** is a geostatistical approach for estimating prehistoric population size and density.  
 This repository contains a manual on how to model Core Areas with R. More specifically, the technical implementation of the first two parts of the **Cologne Protocol** is explained. The first part is a GIS-analysis of site distributions and the second part deals with the identification of so-called Core Areas. These two parts can be divided further into several working steps, including the construction of Voronoi diagrams and "Largest Empty Circles", kriging, converting the kriging results into isolines and finally calculating the needed criteria to select the Optimally Describing Isoline.
-The aim of this repository is neither to explain the further steps of the **Cologne Protocol** nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
+The aim of this repository is neither to explain the theoretical background nor the further steps of the **Cologne Protocol**. For these points please refer to the associated publication including the supplementary information.
 
 ### How to use
 
 If you already know the **Cologne Protocol** and if you are familiar with `R`, we recommend starting with the `.R` files in the `code\` directory. Change the variables in the first part of file `00_LEC.R` according to your research needs and run all code successively.  
 If you know a bit of the **Cologne Protocol** and programming with `R`, we recommend starting with the `EarlyNeolithic.Rmd` file.
-If you don't know the **Cologne Protocol**, we recommend to read the above mentioned publication first.
+If you don't know the **Cologne Protocol**, we recommend reading the above mentioned publication first.
 
 ### Other resources
 
-There exsist other manuals and recourses to fulfill the first two parts of the **Cologne Protocol**. The above mentiond publications is not only accopanied by an `R` manual but also by manuals for `QGIS`, `MapInfo` and `ArcGIS`. Please see the publication for more information.  
+There exist other manuals and recourses to fulfill the first two parts of the **Cologne Protocol**. The above mentioned publications is not only accompanied by an 'R' manual but also by manuals for `QGIS`, `MapInfo` and `ArcGIS`. Please see the publication for more information.  
 
 Additionally, we know two other implementations in `R`: one package called [lecAAR](https://github.com/ISAAKiel/lecAAR) by the Initiative for Statistical Analysis in Archaeology Kiel (ISAAK) and one [script](https://uni-tuebingen.de/en/research/core-research/collaborative-research-centers/sfb-1070/organisation/service-project-s/technical-notes/technical-note-1.html) by Ahlrichs, J., Henkner, J. and Schmidt, K.
-This manual and these two implementations overlap partly because of the use of the same packages, but we think that the present manual provides for the first time a complete coverage of the first two parts of the **Cologne Protocol**.
+This manual and these two implementations overlap partly because of the use of the same packages, but we think that the present manual for the first time provides a complete coverage of the first two parts of the **Cologne Protocol**.
 
 ### Licence:
 
