@@ -1,8 +1,10 @@
 ---
-title: Example application of the Cologne Protocol for the Early Neolithic of central Europe using R
+title: Example application of the Cologne Protocol for the Early Neolithic of Central
+  Europe using R
 author: "M. Broich & R. Peters"
-date: "03 April 2020"
+date: "05 April 2020"
 output:
+  word_document: default
   html_document: default
 ---
 
@@ -19,14 +21,14 @@ options(scipen = 999)
 
 ## Introduction
 
-This manual presents an example application of the **Cologne Protocol**. It is based upon the `.R` files which are in the `code\` directory of the GitHub repository [CologneProtocol](https://github.com/Mono2/CologneProtocol). If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. However, the code chunks shown in this manual originate from the mentioned `.R` files. Though it might be possible that the files of the GitHub repository have been changed, due to the improving of the script.
+This manual presents an example application of the **Cologne Protocol**. It is based upon the `.R` files which are in the `code\` directory of the GitHub repository [CologneProtocol](https://github.com/Mono2/CologneProtocol). If you want to apply the Cologne Protocol on your own data, we recommend you to use these files, as it is possible to individually adjust certain variables at the beginning of the `00_LEC.R` file. However, the code chunks shown in this manual originate from the mentioned `.R` files. It is possible that the files of the GitHub repository have changed, due to improvements.
 
 The manual describes the first two parts of the Cologne Protocol, which are a GIS-analysis of site distribution and the identifying of so-called Core Areas. The aim of this document is neither to explain the further steps of the Cologne Protocol nor the theoretical background. For these points please refer to the associated publication including the supplementary information.
 
 The goal of the script is to carry out all steps of the first two parts of the Cologne Protocol in R. These are (cf. *Schmidt et al. 2020, table S2*):
 
 **Tasks:**  
-1. loading data (Shape-layer with sites as points)  
+1. Loading data (Shape-layer with sites as points)  
 2. Creating of Voronoi Diagram  
 3. Extraction of Vertices  
 4. Aggregation of Verticies  
@@ -45,11 +47,11 @@ To run the code of the script several packages are needed. These dependencies ar
 Furthermore, the script was developed under R version 3.6.3.
 
 
-## Task 1: loading data (Shape-layer with sites as points)
+## Task 1: Loading data (Shape-layer with sites as points)
 
-For this exemplary application, we use a distribution map of the Early Neolithic Linear Pottery Culture (LBK) in Central Europe. The map is based on *Preuss (1998, Karte 1)* and available from the CRC 806 database (https://crc806db.uni-koeln.de/start/).
+For this exemplary application, we use a distribution map of the Early Neolithic Linear Pottery Culture (LBK) in Central Europe. The map is based on *Preuss (1998, Karte 1)* and available from the CRC 806 database (https://crc806db.uni-koeln.de/start/). Besides point symbols representing single sites the original map also included symbols for an agglomeration of five sites. The digital data set has been processed to resolve this issue
 
-The distribution map can be loaded into R via URL: 
+The distribution map can be loaded into R via an URL: 
 
 ```{r load data}
 
@@ -70,12 +72,13 @@ sp::proj4string(sites) <- sp::CRS("+init=epsg:31467")
 
 ```
 
-It is important to note, that Cartesian coordinates (planar coord.) have to be used, because `rgeos::gDistance` will only accept planar coordinates. Especially Lat/Long-coordinates will cause a problem.
+It is important to note, that cartesian coordinates (planar coordinates) have to be used, because `rgeos::gDistance` will not accept eliptical coordinates. Especially Lat/Long-coordinates will cause a problem.
 
 We can also plot the data:
 
 ```{r plot sites, echo=FALSE}
 plot(sites@coords[, 1], sites@coords[, 2],
+     asp = 1,
      main = "Early Neolithic sites in Central Europe",
      xlab = "[EPSG 31467]",
      ylab = NA)
@@ -83,7 +86,7 @@ plot(sites@coords[, 1], sites@coords[, 2],
 
 ## Largest Empty Circle
 
-The "Largest Empty Circle" (LEC) or more precisely the radius/diameter of a LEC is a measure of site distance. Every LEC has it's center at a vertex of a Thiessen polygon (e.g. Voronoi diagram) and exactly three sites are located on every periphery of a LEC. An illustration can be found at *Zimmermann et al. (2004, Abb.5)*.  
+The "Largest Empty Circle" (LEC) or more precisely the radius of a LEC is a measure of site distance. Every LEC has it's center at a vertex of a Thiessen polygon (e.g. Voronoi diagram) and exactly three sites are located on every circumference of a LEC. An illustration can be found at *Zimmermann et al. (2004, Abb.5)*.  
 To summarize, areas with larger site distances will be characterized by larger radii of LECs and, logically, areas with smaller site distances will be characterized by smaller radii of LECs.
 
 ### Tasks 2 and 3: Creating of Voronoi diagrams and Extraction of vertices
@@ -123,8 +126,8 @@ sp::proj4string(vertices_spdf) <- sp::CRS("+init=epsg:31467")
 
 ### Task 4: Aggregation of vertices
 
-During the step of extracting vertices we didn't take care of the duplicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artificial site distances and it must be decided on a case-by-case basis wether the border points should be deleted or not.  
-In the present example application we have to remove the duplicates but we will keep the border points.
+During the step of extracting vertices we didn't take care of vertices duplicates. In addition, some of the vertices are located at the border of the working area, the so-called border points. These points create artificial site distances and it must be decided on a case-by-case basis whether the border points should be deleted or not.  
+In the present example application we have to remove the duplicates, but we will keep the border points.
 
 ```{r vertices aggregation}
 
@@ -194,7 +197,7 @@ The next part of this document will describe the used Kriging interpolation to e
 
 ### Task 6: Preparation and Grid
 
-For kriging we need a grid of evenly distributed points. The interpolation algorithm will estimate the site distance (radius LEC) at every point of the grid, based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)* including kriging in R.  
+For kriging we need a grid of evenly distributed points. The interpolation algorithm will estimate the site distance (radius of LEC) at every point of the grid, based upon the available vertices and their values for the radius of the LEC. A general introduction to kriging can be found at *Hengel (2007)* including kriging in R.  
 The grid spacing to be selected depends on various factors. The size of the working area or the regular distances between the archaeological sites are an important factor. In addition, the selected grid spacing will significantly influence the computing time required, because a shorter grid distance will create more points.  
 For the current example we will create a grid with a spacing of 1000 m between each point. This is a comparable large spacing but the working area is spanning most of Central Europe, which is a quite large area.
 
@@ -214,7 +217,7 @@ The generated grid consists of `r length(grid@coords[, 1])` points, at which the
 ### Task 7: Semivariogram
 
 The kriging procedure requires a theoretical semivariogram, which is used to estimate the radii of the LEC at every point of the grid. To compute this theoretical semivariogram, we need to explore first the experimental semivariogram. At this point we will refer again to *Hengel (2007)* as we will give no introduction to kriging in general.  
-Before we can inspect the experimental semivariogram we have to define a lag distance. We devide the bounding box diagonal by 250, the default lag distance used in the Cologne Protocol:
+Before we can inspect the experimental semivariogram we have to define a lag distance. We divide the bounding box diagonal by 250, the default lag distance used in the Cologne Protocol:
 
 ```{r lag distance}
 # Define Bounding Box Diagonal
@@ -224,7 +227,7 @@ bbox_diag <- sp::spDists(t(vertices_spdf@bbox))[1, 2]
 lagdist <- bbox_diag/250
 ```
 
-Now it is possible compute the experimental semivariogram:
+Now it is possible to compute the experimental semivariogram:
 
 ```{r exp vario}
 # Sample variogram
@@ -233,14 +236,14 @@ vertices_vario <- gstat::variogram(radiusLEC~1,
                                    width = lagdist)
 ```
 
-With the help of the experimental semivariogram, which you can seen below, we can compute a theoretical semivariogram.
+With the help of the experimental semivariogram, which you can see below, we are able to compute a theoretical semivariogram.
 
 ```{r plot exp vario, echo=FALSE}
 plot(vertices_vario)
 ```
 
 Doing so, we will need to identify the first plateau of the experimental semivariogram. According to *Zimmermann et al. (2004, 52)* the sill and range value of the theoretical semivariogram should be fitted to the first plateau of the experimental semivariogram. Additionally, the nugget value should be set to zero.  
-In the current example we will identify the first plateau automatically. Of course it is also possible to choose these values by hand. And a decision has to be made on a case-by-case basis.
+In the current example we will identify the first plateau automatically. Of course, it is also possible to choose these values by hand. And a decision has to be made on a case-by-case basis.
 
 ```{r plateau}
 # Identify first plateau for fitting theoretical variogram  
@@ -252,7 +255,7 @@ range.plateau <- vertices_vario %$%
 sill.plateau <- vertices_vario$gamma[vertices_vario$dist == range.plateau]
 ```
 
-Finally, we have to choose a model for the fitting of the theoretical semivariogram. The function `gstat::show.vgm()` will show you all available models. We, however, recommend to use the exponential "Exp" or spherical "Sph" model.  
+Finally, we have to choose a model for the fitting of the theoretical semivariogram. The function `gstat::show.vgm()` will show you all available models. We, however, recommend the exponential "Exp" or spherical "Sph" model.  
 In the current example we will use a spherical Model:
 
 ```{r fitting vario}
@@ -278,7 +281,7 @@ plot(vertices_vario,
 
 ### Kriging
 
-Now we have every information for the kriging procedure. The only three variables we have to define are `nmin`, `nmax` and `maxdist` in the `gstat::krige()` function. `nmin` and `nmax` are in our case the minimum and maximum number of Voronoi vertices, which will be considered by the kriging algorithm, so we are using local Kriging. Furthermore, we define that only observations (vertices) within a range of half of the bounding box diagonal will be used (`maxdist`). These are the default values for the Cologne Protocol.
+Now we have every information for the kriging procedure. The only three variables we have to define are `nmin`, `nmax` and `maxdist` in the `gstat::krige()` function. `nmin` and `nmax` are in our case the minimum and maximum number of Voronoi vertices, which will be considered by the kriging algorithm, so we are using local Kriging. Furthermore, only observations (vertices) within a range of half of the bounding box diagonal will be used (`maxdist`). These are the default values for the Cologne Protocol (*cf. Schmidt et al. 2020*).
 
 ```{r kriging}
 # Kriging
@@ -294,7 +297,7 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
 
 ### Task 8: Kriging -  inspect and export raster output
 
-The results of the kriging procedure can be visualized by two plots. The first one shows the estimated radii of the LECs at every point of the created grid:
+The results of the kriging procedure can be visualized by two plots. The first one shows the estimated radii of the LECs at every point of the created grid - the prediction:
 
 ```{r krige results, echo=FALSE}
 LEC_kriged %>% as.data.frame %>%
@@ -353,7 +356,7 @@ How to export the Kriging results as GeoTiff and grd-file:
 
 ## Optimally Describing Isolines
 
-On the basis of the kriging results we will create isolines and we will select an "Optimally Describing Isoline" (ODI) out of these. The selection of the ODI is based upon several statistical parameters of the isolines (*Zimmermann et al. (2004, 53-55)*).
+On the basis of the kriging results we will create isolines and we will select an "Optimally Describing Isoline" (ODI). The selection of the ODI is based upon several statistical parameters of the isolines (*Zimmermann et al. (2004, 53-55)*).
 
 ### Task 9: Creating Contour Lines (Isolines)
 
@@ -373,8 +376,8 @@ isoline_polygons <- LEC_kriged %>%
 sp::proj4string(isoline_polygons) <- sp::CRS("+init=epsg:31467")
 ```
 
-In our sample application isolines will be created starting at 0,5 km and end up at 20 km with an equidistance of 0,5 km.
-When finished, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with the mean value of each step, e.g. the isoline between 1500 m and 2000 m is named "1750" instead of "2000" in the current example.
+In our example application isolines will be created starting at 0,5 km and ending up at 20 km with an equidistance of 0,5 km.
+When finished, we have to rename the isoline_polygons, because the function `inlmisc::Grid2Polygons()` does name them with reference to the mean value of each step, e.g. the isoline between 1500 m and 2000 m is named "1750" instead of "2000" in the current example.
 
 ```{r renaming polygons}
 # Rename the isolines because Grid2Polygon names them with the middle value
@@ -383,7 +386,7 @@ isoline_polygons@data[, 1] <- seq(0, 20000, 500)[2:c(length(isoline_polygons@dat
 
 ### Task 10: Calculating the Area and Number of Sites per Isoline
 
-In order to be able to select the ODI, it makes sense to look at the statistical properties of the isolines. These are, for example, the number of archaeological sites within the isolines, their difference in growth per equidistance, the number of distinct areas per isoline or the are increase per equidistance. In total, we will calculate eight different statistical properties and we will store them in a `data.frame`:
+In order to be able to select the ODI, it makes sense to look at the statistical properties of the isolines. These are, for example, the number of archaeological sites within the isolines, their difference in growth per equidistance, the number of distinct areas per isoline or the area increase per equidistance. In total, we will calculate eight different statistical properties and we will store them in a `data.frame`:
 
 ```{r initializing data.frame}
 # Initialize data.frame
@@ -409,14 +412,14 @@ for (i in 1:length(isoline_polygons)) {
 }
 ```
 
-Now we will fill the `data.frame` with the name of the equidistances:
+Now we will fill the `data.frame` with the name of the isolines:
 
 ```{r equidistances}
 # Insert name of isolines
 Isolines_stats[, 1] <- isoline_polygons@data[, 1]
 ```
 
-The next three calculations consider the number of sites within a LEC redius (certain site distance) and its percentage as well as the enclosed area:  
+The next three calculations consider the number of sites within a LEC radius (certain site distance) and its percentage as well as the enclosed area:  
 
 ```{r number percent area}
 # Calculate number of sites within a certain site distance
@@ -451,7 +454,7 @@ Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 6]))
 Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 8]))
 ```
 
-To make reading of the `data.frame` easier, we will convert the equidistances into kilometers:
+To make reading of the `data.frame` easier, we will convert the equidistances into kilometers. If you use a different map unit you may have to change this step or leave it out:
 
 ```{r kilometer}
 Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000
@@ -465,12 +468,12 @@ print.data.frame(Isolines_stats)
 
 ### Task 11: Data export
 
-Our script offers to export the isolines as polygons (.shp), the raster images of the kriging result and variance (.grd, GeoTiff) and a table with the statistical properties of the isolines. This code is not shown here, but you can find it at the end of the `03_Visualisation_Export.R` file (see also functions `write.table()` and `rgdal::writeOGR.R`). 
+Our script is able to export the isolines as polygons (.shp), the raster images of the kriging result and variance (.grd, GeoTiff) and a table with the statistical properties of the isolines. This code is not shown here, but you can find it at the end of the `03_Visualisation_Export.R` file (see also functions `write.table()` and `rgdal::writeOGR.R`). 
 
 ### Task 12: Selecting the "Optimally Describing Isoline"
 
 Following the recommendations of *Zimmermann et al. (2004, 53f.)* and *Zimmermann et al (2009, 9ff.)* we will have a look at three statistical properties: the difference in increase of sites per equidistance, the number of areas with a specif site density and the increase of included space. The most important is, however, the increase of included space (*Zimmermann et al. 2009, 9*) . Please note that in the script a visualization of all statistical properties is provided.  
-To begin with, we will plot the difference in increase of sites within per equidistance:
+To begin with, we will plot the difference in increase of sites per equidistance:
 
 ```{r number of sites, echo=FALSE, warning=FALSE}
 Isolines_stats %>%
@@ -487,8 +490,8 @@ Isolines_stats %>%
                  axis.text.x = ggplot2::element_text(angle = 90))
 ```
 
-A maximum difference in increase can be seen from the 2.0 to 2.5 km isoline with `r max(Isolines_stats$diff_Sites, na.rm = TRUE)`.  
-Nextwe will have a look at the number of areas with a specific site density:
+A maximum difference in increase of `r max(Isolines_stats$diff_Sites, na.rm = TRUE)` sites can be seen from the 2.0 to 2.5 km isoline.  
+Next we will have a look at the number of areas with a specific site density:
 
 ```{r number of areas, echo=FALSE, warning=FALSE}
 Isolines_stats %>%
@@ -505,7 +508,7 @@ Isolines_stats %>%
                  axis.text.x = ggplot2::element_text(angle = 90))
 ```
 
-As can be seen in the figure the number of areas with a specific site density reach a plateau at the 5.0 or 5.5 km isoline.
+The number of areas with a specific site density reach a plateau at the 5.0 or 5.5 km isoline.
 Lastly, we will plot the most important statistical parameter: the increase of included space.
 
 ```{r area increase, echo=FALSE, warning=FALSE}
