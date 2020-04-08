@@ -57,7 +57,11 @@ sp::proj4string(sites) <- sp::CRS(your_projection)
 
 # calculate vertices of voronoi diagram
 voronoi_vertices <- deldir::deldir(sites@coords[, 1],
-                                   sites@coords[, 2]) %$%
+                                   sites@coords[, 2],
+                                   rw=c(t(sites@bbox)[1,1],
+                                        t(sites@bbox)[2,1],
+                                        t(sites@bbox)[1,2],
+                                        t(sites@bbox)[2,2])) %$%
   # extraction of vertices
   dirsgs
 
