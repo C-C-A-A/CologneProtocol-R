@@ -237,7 +237,7 @@ if(export_raster == TRUE){
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/isoline_merged.prj")
   
-  # Polygons of isolines as shape file
+  # Vornoi diagrams as shape file
   rgdal::writeOGR(voronoi_tiles,
                   dsn = "output",
                   layer = "voronoi_tiles",
@@ -246,6 +246,17 @@ if(export_raster == TRUE){
                   overwrite_layer = TRUE)
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/voronoi_tiles.prj")
+  
+  
+  # Vertices as shape file
+  rgdal::writeOGR(vertices_spdf,
+                  dsn = "output",
+                  layer = "vertices",
+                  driver = "ESRI Shapefile",
+                  check_exists = TRUE,
+                  overwrite_layer = TRUE)
+  # Rewrite .prj-File with WKT
+  rgdal::showWKT(your_projection, file="output/vertices.prj")
   
   # Polygons of isolines as shape file
   rgdal::writeOGR(sites,
