@@ -52,8 +52,8 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
                            vertices_spdf,
                            grid,
                            model = vertices_vario_fit,
-                           nmin = 3,
-                           nmax = 10,
+                           nmin = your_nmin,
+                           nmax = your_nmax,
                            maxdist = bbox_diag/2,
                            debug.level = -1)
 
