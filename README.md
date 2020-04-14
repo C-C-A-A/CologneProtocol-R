@@ -27,7 +27,7 @@ Schmidt, I., Hilpert, J., Kretschmer, I., Peters, R., Broich, M., Schiesberg, S.
 ### Overview:
 
 The **Cologne Protocol** is a geostatistical approach for estimating prehistoric population size and density.  
-This repository contains a manual on how to model Core Areas with `R`. This modelling approach constitutes the first of two successive tasks within the 'Cologne Protocol' to estimate past population sizes and densities, described in more detail elsewhere (Schmidt et al. 2020: S2.1. and S2.2.).
+This repository contains a manual on how to model Core Areas with `R`. This modelling approach constitutes the first of two successive tasks within the **Cologne Protocol** to estimate past population sizes and densities, described in more detail elsewhere (Schmidt et al. 2020: S2.1. and S2.2.).
 The manual outlines the technical implementation of working steps 1 to 12 (see Schmidt et al. 2020: Table S2): Firstly a GIS-analysis of site distributions and secondly the identification of the ODI. The working steps include the construction of Voronoi diagrams and "Largest Empty Circles", kriging, converting the kriging results into isolines and finally calculating the criteria to select the ODI.  
 The aim of this repository is neither to explain the theoretical background nor the further steps of the **Cologne Protocol**. For these points please refer to the associated publication including the supplementary information.
 
