@@ -13,9 +13,9 @@ Isolines_stats <- data.frame(km_isoline = integer(),
                              number_Area_merged = integer(),
                              number_Sites = integer(), 
                              percent_Sites = integer(),
-                             Area = integer(),
                              increase_Sites = integer(),
                              diff_Sites = integer(),
+                             Area = integer(),
                              increase_Area = integer(),
                              diff_Area = integer(),
                              stringsAsFactors = FALSE)
@@ -72,7 +72,7 @@ Isolines_stats$increase_Area <- c(NA, iso_area[-1])
 # Difference in increase of number of sites and area per equidistance ----------
 
 # Calculate difference of increase of number of sites per equidistance
-Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 7]))
+Isolines_stats$diff_Sites <- c(NA, diff(Isolines_stats[, 6]))
 
 # Calculate difference in increase of area per equidistance
 Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 9]))
