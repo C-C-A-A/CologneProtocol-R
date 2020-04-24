@@ -211,7 +211,8 @@ Isolines_stats %>%
 write.table(Isolines_stats,
             "output/Isolines_stats.csv",
             sep = ";",
-            dec = ",")
+            dec = ",",
+            row.names = FALSE)
 
 # Polygons of Isolines and raster of Kriging
 if(export_raster == TRUE){
