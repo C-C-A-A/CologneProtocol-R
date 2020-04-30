@@ -25,7 +25,7 @@ range.plateau <- vertices_vario %$%
   {vertices_vario[2][which.max(./.[1] < 0.1), ]}
 
 sill.plateau <- vertices_vario$gamma[vertices_vario$dist == range.plateau]
-  
+
 # Fitting theoretical variogram
 vertices_vario_fit <- gstat::fit.variogram(vertices_vario,
                                            # Zimmermann et al 2004, 52
@@ -46,7 +46,7 @@ grid <- expand.grid(x = seq(as.integer(range(vertices_spdf@coords[, 1]))[1],
                             as.integer(range(vertices_spdf@coords[, 2]))[2],
                             by = your_grid_spacing)) %>%
   {sp::SpatialPoints(coords = .[1:2], proj4string = sp::CRS(your_projection))}
- 
+
 # Kriging
 LEC_kriged <- gstat::krige(radiusLEC~1,
                            vertices_spdf,
@@ -60,8 +60,8 @@ LEC_kriged <- gstat::krige(radiusLEC~1,
 # Create isolines --------------------------------------------------------------
 isoline_polygons <- LEC_kriged %>%
   {raster::rasterFromXYZ(data.frame(x = sp::coordinates(.)[, 1],
-                                  y = sp::coordinates(.)[, 2],
-                                  z = .[[1]]),
+                                    y = sp::coordinates(.)[, 2],
+                                    z = .[[1]]),
                          crs = sites@proj4string)} %>%
   as("SpatialGridDataFrame") %>%
   inlmisc::Grid2Polygons(level = TRUE, at = your_isoline_steps)
@@ -91,16 +91,17 @@ equidist <- diff(your_isoline_steps)[1]
 penultimate_iso <- max(your_isoline_steps) - equidist
 
 # New SPDF with only areas of the lowest site density
+print(paste0("Creating Contour-Line ", 1,"/",length(seq(equidist, penultimate_iso, equidist)),": ",equidist))
 isoline_merged <- isoline_polygons_copy[isoline_polygons_copy@data[, 1] == equidist, ]
 
 # Variable needed for printing progress
-n = 1
+n = 2
 
 # The following loop merges the polygons.
 for (i in seq(equidist, penultimate_iso, equidist)) {
   
   # Print progress
-  print(paste0("Creating Contour-Line ", n,"/",length(seq(equidist, penultimate_iso, equidist)),": ",i))
+  print(paste0("Creating Contour-Line ", n,"/",length(seq(equidist, penultimate_iso, equidist))+1,": ",i + equidist))
   flush.console()
   n = n + 1
   
@@ -108,13 +109,16 @@ for (i in seq(equidist, penultimate_iso, equidist)) {
   isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i, ] <- i + equidist
   
   # aggregate these polygons
-  isoline_polygons_copy <- raster::aggregate(isoline_polygons_copy, by = "z")
+  merged_iso_i <- raster::aggregate(isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + equidist, ], by = "z")
   
   # merge new SPDF with aggregated polygons
   isoline_merged <- rbind(isoline_merged,
-                          isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + equidist, ])
-
+                          merged_iso_i)
+  
+  rm(merged_iso_i)
+  
 }
 
 # delete copy of isoline_polygons
 rm(isoline_polygons_copy)
+
