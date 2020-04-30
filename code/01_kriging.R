@@ -86,29 +86,33 @@ isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@dat
 # copy of isoline_polygons
 isoline_polygons_copy <- isoline_polygons
 
+# Get Isoline steps/equidistance variables
+equidist <- diff(your_isoline_steps)[1]
+penultimate_iso <- max(your_isoline_steps) - equidist
+
 # New SPDF with only areas of the lowest site density
-isoline_merged <- isoline_polygons_copy[isoline_polygons_copy@data[, 1] == 500, ]
+isoline_merged <- isoline_polygons_copy[isoline_polygons_copy@data[, 1] == equidist, ]
 
 # Variable needed for printing progress
 n = 1
 
 # The following loop merges the polygons.
-for (i in seq(500, 29500, 500)) {
+for (i in seq(equidist, penultimate_iso, equidist)) {
   
   # Print progress
-  print(paste0("Creating Contour-Line ", n,"/",length(seq(500, 29500, 500)),": ",i))
+  print(paste0("Creating Contour-Line ", n,"/",length(seq(equidist, penultimate_iso, equidist)),": ",i))
   flush.console()
   n = n + 1
   
   # change the value of site density of a polygon to one higher equidistance
-  isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i, ] <- i + 500
+  isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i, ] <- i + equidist
   
   # aggregate these polygons
   isoline_polygons_copy <- raster::aggregate(isoline_polygons_copy, by = "z")
   
   # merge new SPDF with aggregated polygons
   isoline_merged <- rbind(isoline_merged,
-                          isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + 500, ])
+                          isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + equidist, ])
 
 }
 
