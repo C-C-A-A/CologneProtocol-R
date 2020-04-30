@@ -16,7 +16,7 @@ options(scipen = 999)
 # variables used for loading and creating data 
 your_projection <- "+init=epsg:31467" # the projection of your data
 your_grid_spacing <- 1000 # choose some value [m] between 200 and 1000 
-your_isoline_steps <- seq(0, 30000, 500) # min, max, step (equidistance)
+your_isoline_steps <- seq(0, 20000, 500) # min, max, step (equidistance)
 remove_border_points <- FALSE # Boolean (TRUE/FALSE), wether border points are removed or not
 export_raster <- TRUE # Boolean (TRUE/FALSE), wether kriging and variance raster are exported
 
