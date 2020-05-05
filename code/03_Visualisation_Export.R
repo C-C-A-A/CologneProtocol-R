@@ -87,6 +87,7 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+if(merge_polygons == TRUE){
 # EXPERIMENTAL:
 # Number of distinct areas per isoline MERGED
 Isolines_stats %>%
@@ -101,7 +102,7 @@ Isolines_stats %>%
   ggplot2::theme_bw() +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
-
+}
   
 # Number of sites per isoline
 Isolines_stats %>%
@@ -228,6 +229,7 @@ if(export_raster == TRUE){
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/isoline_polygons.prj")
   
+  if(merge_polygons == TRUE){
   # Merged Polygons of isolines as shape file
   rgdal::writeOGR(isoline_merged,
                   dsn = "output",
@@ -237,6 +239,7 @@ if(export_raster == TRUE){
                   overwrite_layer = TRUE)
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/isoline_merged.prj")
+  }
   
   # Vornoi diagrams as shape file
   rgdal::writeOGR(voronoi_tiles,
@@ -296,3 +299,4 @@ if(export_raster == TRUE){
   raster::writeRaster(v, "output/Variance_raster.grd",format="raster", overwrite=T, prj=T)
   
 }
+
