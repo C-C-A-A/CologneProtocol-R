@@ -90,12 +90,16 @@ isoline_polygons_copy <- isoline_polygons
 equidist <- diff(your_isoline_steps)[1]
 penultimate_iso <- max(your_isoline_steps) - equidist
 
+
 # New SPDF with only areas of the lowest site density
-print(paste0("Creating Contour-Line ", 1,"/",length(seq(equidist, penultimate_iso, equidist)),": ",equidist))
+print(paste0("Creating Contour-Line ", 1,"/",length(seq(equidist, penultimate_iso, equidist))+1,": ",equidist))
 isoline_merged <- isoline_polygons_copy[isoline_polygons_copy@data[, 1] == equidist, ]
 
 # Variable needed for printing progress
 n = 2
+
+iso_list = list()
+
 
 # The following loop merges the polygons.
 for (i in seq(equidist, penultimate_iso, equidist)) {
@@ -109,16 +113,21 @@ for (i in seq(equidist, penultimate_iso, equidist)) {
   isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i, ] <- i + equidist
   
   # aggregate these polygons
-  merged_iso_i <- raster::aggregate(isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + equidist, ], by = "z")
+  iso_list <- append(iso_list,  raster::aggregate(isoline_polygons_copy[isoline_polygons_copy@data[, 1] == i + equidist, ], by = "z"))
   
-  # merge new SPDF with aggregated polygons
-  isoline_merged <- rbind(isoline_merged,
-                          merged_iso_i)
+  sequence <- seq(equidist, penultimate_iso, equidist)
   
-  rm(merged_iso_i)
+  m <- sequence[seq(0, length(sequence)-1, 10)]
   
+  
+  # Stops for merging every 10th isoline to speed up process
+  if(i %in% m){
+    print("...merging")
+    isoline_polygons_copy <- raster::aggregate(isoline_polygons_copy, by = "z")
+  }
 }
+
+isoline_merged <- rbind(isoline_merged, do.call(rbind, iso_list))
 
 # delete copy of isoline_polygons
 rm(isoline_polygons_copy)
-
