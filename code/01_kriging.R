@@ -74,6 +74,8 @@ isoline_polygons@data[, 1] <- your_isoline_steps[2:c(length(isoline_polygons@dat
 
 
 # Merge polygons ---------------------------------------------------------------
+# If Condition wether isoline polygons should be merged or not
+if(merge_polygons == TRUE){
 
 # THIS IS EXPERIMENTAL
 
@@ -131,3 +133,4 @@ isoline_merged <- rbind(isoline_merged, do.call(rbind, iso_list))
 
 # delete copy of isoline_polygons
 rm(isoline_polygons_copy)
+}
