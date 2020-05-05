@@ -19,6 +19,7 @@ your_grid_spacing <- 1000 # choose some value [m] between 200 and 1000
 your_isoline_steps <- seq(0, 20000, 500) # min, max, step (equidistance)
 remove_border_points <- FALSE # Boolean (TRUE/FALSE), wether border points are removed or not
 export_raster <- TRUE # Boolean (TRUE/FALSE), wether kriging and variance raster are exported
+merge_polygons <- FALSE # Boolean (TRUE/FALSE), wether polygons should be merged (experimental) to get no of parts
 
 # variables used for kriging
 your_model <- c("Sph") # choose from gstat::show.vgm(), 
