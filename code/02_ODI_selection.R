@@ -26,6 +26,7 @@ for (i in 1:length(isoline_polygons)) {
     sum(sapply(isoline_polygons@polygons[[i]]@Polygons,                                                                                 function(x) {sum(isTRUE(x@hole), na.rm = TRUE)}))
 }
 
+if(merge_polygons == TRUE){
 # EXPERIMENTAL:
 # Counting the numbers of distinct areas with specif site density MERGED
 
@@ -43,7 +44,7 @@ for (i in 1:length(isoline_merged)) {
 }  
 
 Isolines_stats$number_Area_merged <- as.vector(apply(number, 2, function(x) sum(x, na.rm = TRUE)))
-
+}
 
 # Insert name of isolines
 Isolines_stats[, 1] <- isoline_polygons@data[, 1]
