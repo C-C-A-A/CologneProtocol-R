@@ -7,6 +7,7 @@ options(scipen = 999)
 
 # Plot of archaeological sites and Thiessen polygons ------------------------
 
+plot_sites_voronoi <- function(){
 plot(vertices_spdf@coords[,1], vertices_spdf@coords[,2],
      type = "n",
      asp = 1,
@@ -33,18 +34,26 @@ legend(x = "topleft",
        merge = TRUE,
        bty = "n",
        bg = "transparent")
+}
+plot_sites_voronoi()
 
 # Variogram / semivariogram ----------------------------------------------------
+plot_vario <-
 plot(vertices_vario,
      vertices_vario_fit)
+plot_vario
 
 # Zoom in on range and sill plateau (range and sill.platau + 20 %)
+plot_vario_zoom <-
 plot(vertices_vario,
      vertices_vario_fit,
      xlim = c(0, range.plateau+(range.plateau/100)*20),
      ylim = c(0, sill.plateau+(sill.plateau/100)*20))
 
+plot_vario_zoom
+
 # Kriging results --------------------------------------------------------------
+plot_kriging <- function(){
 LEC_kriged %>% as.data.frame %>%
   ggplot2::ggplot(ggplot2::aes(x=x, y=y)) +  
   ggplot2::geom_tile(ggplot2::aes(fill=var1.pred))+
@@ -54,8 +63,11 @@ LEC_kriged %>% as.data.frame %>%
   ggplot2::geom_point(data = as.data.frame(sites),
                       ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
                       colour = "black", fill= "red", alpha=1/5)
-
+}
+plot_kriging()
+  
 # Variance of kriging results --------------------------------------------------
+plot_variance <- function(){
 LEC_kriged %>% as.data.frame %>%
   ggplot2::ggplot(ggplot2::aes(x=x, y=y)) + 
   ggplot2::geom_tile(ggplot2::aes(fill=var1.var)) + 
@@ -65,7 +77,8 @@ LEC_kriged %>% as.data.frame %>%
   ggplot2::geom_point(data = as.data.frame(sites),
                       ggplot2::aes(x = coords.x1, y = coords.x2), shape=21, size=2, 
                       colour = "white", fill= "black", alpha=1/2)
-
+}
+plot_variance()
 
 # Change units of all data.frames ----------------------------------------------
 Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000 # for easy reading
@@ -74,6 +87,7 @@ Isolines_stats[, 1] <- Isolines_stats[, 1] / 1000 # for easy reading
 # Plot of descriptive properties of isolines -----------------------------------
 
 # Number of distinct areas per isoline
+plot_n_area <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Area)) +
   ggplot2::geom_line() +
@@ -87,6 +101,8 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_n_area
+  
 if(merge_polygons == TRUE){
 # EXPERIMENTAL:
 # Number of distinct areas per isoline MERGED
@@ -103,8 +119,9 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 }
-  
+
 # Number of sites per isoline
+plot_n_sites <- 
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = number_Sites)) +
   ggplot2::geom_line() +
@@ -118,7 +135,10 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_n_sites
+
 # Percent of sites per isoline
+plot_perc_sites <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = percent_Sites)) +
   ggplot2::geom_line() +
@@ -132,7 +152,10 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_perc_sites
+
 # Area per isoline
+plot_area <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = Area)) +
   ggplot2::geom_line() +
@@ -146,9 +169,12 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_area
+  
 # Plot of increase of number of sites and area per equidistance ----------------
 
 # Increase of number of sites
+plot_incr_sites <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = increase_Sites)) +
   ggplot2::geom_line() +
@@ -162,7 +188,10 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_incr_sites
+
 # Increase of area
+plot_incr_area <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = increase_Area)) +
   ggplot2::geom_line() +
@@ -176,9 +205,11 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_incr_area
 # Plot of difference in increase of number of sites and area per equidistance --
 
 # Difference of increase of number of sites
+plot_diff_sites <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = diff_Sites)) +
   ggplot2::geom_line() +
@@ -192,7 +223,10 @@ Isolines_stats %>%
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
 
+plot_diff_sites
+
 # Difference increase of area
+plot_diff_area <-
 Isolines_stats %>%
   ggplot2::ggplot(ggplot2::aes(x = km_isoline, y = diff_Area)) +
   ggplot2::geom_line() +
@@ -205,6 +239,67 @@ Isolines_stats %>%
   ggplot2::theme_bw() +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                  axis.text.x = ggplot2::element_text(angle = 90))
+
+plot_diff_area
+
+# Save plots as images ---------------------------------------------------------
+
+# export raster maps as tiffs
+tiff("output/01_kriging.tiff", width = 7, height = 7, units = 'in', res = 300)
+plot_kriging()
+dev.off()
+
+tiff("output/02_variance.tiff", width = 7, height = 7, units = 'in', res = 300)
+plot_variance()
+dev.off()
+
+
+# export plots to svg
+im_width = 7
+
+svg("output/00_sites_voronoi.svg", width=im_width)
+plot_sites_voronoi()
+dev.off()
+
+svg("output/03_vario.svg", width=im_width)
+plot_vario
+dev.off()
+
+svg("output/04_vario_zoom.svg", width=im_width)
+plot_vario_zoom
+dev.off()
+
+svg("output/05_n_area.svg", width=im_width)
+plot_n_area
+dev.off()
+
+svg("output/06_n_sites.svg", width=im_width)
+plot_n_sites
+dev.off()
+
+svg("output/07_perc_sites.svg", width=im_width)
+plot_perc_sites
+dev.off()
+
+svg("output/08_area.svg", width=im_width)
+plot_area
+dev.off()
+
+svg("output/09_incr_sites.svg", width=im_width)
+plot_incr_sites
+dev.off()
+
+svg("output/10_incr_area.svg", width=im_width)
+plot_incr_area
+dev.off()
+
+svg("output/11_diff_sites.svg", width=im_width)
+plot_diff_sites
+dev.off()
+
+svg("output/12_diff_area.svg", width=im_width)
+plot_diff_area
+dev.off()
 
 # Save data --------------------------------------------------------------------
 
