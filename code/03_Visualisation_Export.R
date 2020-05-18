@@ -334,6 +334,19 @@ if(export_raster == TRUE){
                   overwrite_layer = TRUE)
   # Rewrite .prj-File with WKT
   rgdal::showWKT(your_projection, file="output/isoline_merged.prj")
+  
+  # export smoothed Isolines
+  
+  rgdal::writeOGR(iso_merged_lines_smooth,
+  dsn = "output",
+  layer = "iso_merged_lines_smooth",
+  driver = "ESRI Shapefile",
+  check_exists = TRUE,
+  overwrite_layer = TRUE)
+
+  # Rewrite .prj-File with WKT
+  rgdal::showWKT(your_projection, file="output/iso_merged_lines_smooth.prj")
+  
   }
   
   # Vornoi diagrams as shape file
