@@ -82,3 +82,21 @@ Isolines_stats$diff_Area <- c(NA, diff(Isolines_stats[, 9]))
 # Add Isolines_stats to isoline_polygons ---------------------------------------
 
 isoline_polygons@data <- Isolines_stats
+
+
+# Smooth isolines/polygons (for visualization only) ------------------------------
+
+# The smoothed isolines are just for visualization, not for counting sites or calculating areas!!!
+
+if(merge_polygons == TRUE){
+
+# Add Isolines_stats to isoline_merged ---------------------------------------
+isoline_merged@data <- Isolines_stats
+  
+# convert polygons to lines  
+isoline_merged_lines <- as(isoline_merged, 'SpatialLinesDataFrame')
+  
+# smooth isolines (smoothness can be adjusted)
+iso_merged_lines_smooth <- smoothr::smooth(isoline_merged_lines, method = "ksmooth", smoothness = 2)
+
+}
