@@ -310,6 +310,19 @@ write.table(Isolines_stats,
             dec = ",",
             row.names = FALSE)
 
+# Semi-Variogram/Model Stats
+Vario_stats <- data.frame("model" = vertices_vario_fit$model[2],
+                         "range" = round(vertices_vario_fit$range[2],2),
+                         "psill" = round(vertices_vario_fit$psill[2],2),
+                         "lagdist" = round(lagdist, 2))
+write.table(Vario_stats,
+            "output/Vario_stats.csv",
+            sep = ";",
+            dec = ",",
+            quote = FALSE,
+            row.names = FALSE)
+
+
 # Polygons of Isolines and raster of Kriging
 if(export_raster == TRUE){
   
