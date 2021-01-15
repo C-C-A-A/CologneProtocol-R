@@ -65,7 +65,7 @@ sites <- read.csv(url(url_link))
 sites <- sp::SpatialPointsDataFrame(sp::SpatialPoints(
   cbind(sites$RECHTS, sites$HOCH)),
   sites,
-  proj4string = CRS("+init=epsg:31467"))
+  proj4string = sp::CRS("+init=epsg:31467"))
 
 # This is not a reprojection, but some functions cause problems if the projection is not defined in this way
 sp::proj4string(sites) <- sp::CRS("+init=epsg:31467")
